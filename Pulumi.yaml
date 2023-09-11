@@ -1,0 +1,3 @@
+name: elyclover.com-infra
+runtime: go
+description: Azure native webhosting for elyclover.com with Go
