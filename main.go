@@ -50,8 +50,8 @@ func main() {
 		}
 		storageAccount, err := storage.NewStorageAccount(ctx, siteKey+envKey, &storageAccountArgs)
 		if err != nil {
-			fmt.Printf("ERROR: creating storageAccount %s failed using args: %s\n",
-				siteKey+envKey, storageAccountArgs)
+			fmt.Printf("ERROR: creating storageAccount %s failed\n",
+				siteKey+envKey)
 			return err
 		}
 
@@ -64,8 +64,8 @@ func main() {
 		}
 		_, err = storage.NewStorageAccountStaticWebsite(ctx, siteKey, &storageArgs)
 		if err != nil {
-			fmt.Printf("ERROR: creating staticWebsite %s failed using args: %s\n",
-				siteKey, storageArgs)
+			fmt.Printf("ERROR: creating staticWebsite %s failed\n",
+				siteKey)
 			return err
 		}
 
@@ -79,8 +79,8 @@ func main() {
 		}
 		cdnProfile, err := nativecdn.NewProfile(ctx, siteKey+envKey, &cdnProfileArgs)
 		if err != nil {
-			fmt.Printf("ERROR: creating cdnProfile %s failed using args: %s\n",
-				siteKey+envKey, cdnProfileArgs)
+			fmt.Printf("ERROR: creating cdnProfile %s failed\n",
+				siteKey+envKey)
 			return err
 		}
 
@@ -116,8 +116,8 @@ func main() {
 		}
 		endpoint, err := nativecdn.NewEndpoint(ctx, siteKey+envKey, &cdnEndPointArgs)
 		if err != nil {
-			fmt.Printf("ERROR: creating endpoint %s failed using args: %s\n",
-				siteKey+envKey, cdnEndPointArgs)
+			fmt.Printf("ERROR: creating endpoint %s failed\n",
+				siteKey+envKey)
 			return err
 		}
 
@@ -130,13 +130,12 @@ func main() {
 		}
 		dnsZone, err := dns.LookupZone(ctx, &dnsLookupZoneArgs)
 		if err != nil {
-			fmt.Printf("ERROR: looking up dnsZone in RG %s failed using args: %v\n",
-				dnsRG, dnsLookupZoneArgs)
+			fmt.Printf("ERROR: looking up dnsZone in RG %s failed\n",
+				dnsRG)
 			return err
 		}
 
 		// create new CNAME record in zone for env that will be used by CDN endpoint
-		//tld := cfg.Require("siteName")
 		dnsRecordArgs := dns.CNameRecordArgs{
 			ZoneName:          pulumi.String(dnsZone.Name),
 			ResourceGroupName: pulumi.String(dnsRG),
@@ -146,8 +145,8 @@ func main() {
 		}
 		cnameRecord, err := dns.NewCNameRecord(ctx, siteKey+envKey, &dnsRecordArgs)
 		if err != nil {
-			fmt.Printf("ERROR: creating CNAME record in RG %s failed using args: %v\n",
-				dnsRG, dnsRecordArgs)
+			fmt.Printf("ERROR: creating CNAME record in RG %s failed\n",
+				dnsRG)
 			return err
 		}
 
@@ -162,7 +161,7 @@ func main() {
 		}).(pulumi.StringOutput)
 
 		// Add Custom Domain to CDN to set up automatic TLS termination/cert rotation
-		// Utilize the azure legacy provider since it supports setting up auto-TLS for custom domains
+		// Utilize the azure legacy provider since it supports setting up auto-TLS for CDN custom domains
 		// azure-native provider strangely lacks support for CDN-managed TLS on custom domains... pushing front door? $$$
 		cdnManagedHttps := legacycdn.EndpointCustomDomainCdnManagedHttpsArgs{
 			CertificateType: pulumi.String("Dedicated"),
@@ -172,12 +171,11 @@ func main() {
 		endpointCustomDomainArgs := legacycdn.EndpointCustomDomainArgs{
 			CdnEndpointId:   endpoint.ID(),
 			HostName:        cnameFqdnHappy,
-			CdnManagedHttps: cdnManagedHttps,
+			CdnManagedHttps: &cdnManagedHttps,
 		}
 		_, err = legacycdn.NewEndpointCustomDomain(ctx, siteKey+envKey, &endpointCustomDomainArgs)
 		if err != nil {
-			fmt.Printf("ERROR: creating custom domain for CDN endpoint failed using args: %v\n",
-				endpointCustomDomainArgs)
+			fmt.Println("ERROR: creating custom domain for CDN endpoint failed")
 		}
 
 		return nil
