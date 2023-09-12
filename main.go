@@ -5,9 +5,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/pulumi/pulumi-azure-native-sdk/cdn/v2"
+	nativecdn "github.com/pulumi/pulumi-azure-native-sdk/cdn/v2"
 	"github.com/pulumi/pulumi-azure-native-sdk/resources/v2"
 	"github.com/pulumi/pulumi-azure-native-sdk/storage/v2"
+	legacycdn "github.com/pulumi/pulumi-azure/sdk/v5/go/azure/cdn"
 	"github.com/pulumi/pulumi-azure/sdk/v5/go/azure/dns"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi/config"
@@ -69,14 +70,14 @@ func main() {
 		}
 
 		// Create CDN Profile for usage by our endpoint(s)
-		cdnProfileArgs := cdn.ProfileArgs{
+		cdnProfileArgs := nativecdn.ProfileArgs{
 			Location:          pulumi.String("global"),
 			ResourceGroupName: webResourceGrp.Name,
-			Sku: &cdn.SkuArgs{
+			Sku: &nativecdn.SkuArgs{
 				Name: pulumi.String("Standard_Microsoft"),
 			},
 		}
-		cdnProfile, err := cdn.NewProfile(ctx, siteKey+envKey, &cdnProfileArgs)
+		cdnProfile, err := nativecdn.NewProfile(ctx, siteKey+envKey, &cdnProfileArgs)
 		if err != nil {
 			fmt.Printf("ERROR: creating cdnProfile %s failed using args: %s\n",
 				siteKey+envKey, cdnProfileArgs)
@@ -90,20 +91,20 @@ func main() {
 		}).(pulumi.StringOutput)
 
 		// Create CDN Endpoint using newly created CDN Profile
-		originsArgs := cdn.DeepCreatedOriginArray{
-			cdn.DeepCreatedOriginArgs{
+		originsArgs := nativecdn.DeepCreatedOriginArray{
+			nativecdn.DeepCreatedOriginArgs{
 				Enabled:  pulumi.Bool(true),
 				HostName: staticEndpoint,
 				Name:     pulumi.String("origin1"),
 			}}
-		cdnEndPointArgs := cdn.EndpointArgs{
+		cdnEndPointArgs := nativecdn.EndpointArgs{
 			Origins:                    originsArgs,
 			ProfileName:                cdnProfile.Name,
 			ResourceGroupName:          webResourceGrp.Name,
 			OriginHostHeader:           staticEndpoint,
 			IsHttpAllowed:              pulumi.Bool(false),
 			IsHttpsAllowed:             pulumi.Bool(true),
-			QueryStringCachingBehavior: cdn.QueryStringCachingBehaviorIgnoreQueryString,
+			QueryStringCachingBehavior: nativecdn.QueryStringCachingBehaviorIgnoreQueryString,
 			IsCompressionEnabled:       pulumi.Bool(true),
 			ContentTypesToCompress: pulumi.StringArray{
 				pulumi.String("text/plain"),
@@ -113,7 +114,7 @@ func main() {
 				pulumi.String("text/javascript"),
 			},
 		}
-		endpoint, err := cdn.NewEndpoint(ctx, siteKey+envKey, &cdnEndPointArgs)
+		endpoint, err := nativecdn.NewEndpoint(ctx, siteKey+envKey, &cdnEndPointArgs)
 		if err != nil {
 			fmt.Printf("ERROR: creating endpoint %s failed using args: %s\n",
 				siteKey+envKey, cdnEndPointArgs)
@@ -161,17 +162,22 @@ func main() {
 		}).(pulumi.StringOutput)
 
 		// Add Custom Domain to CDN to set up automatic TLS termination/cert rotation
-		cdnCustDomainArgs := cdn.CustomDomainArgs{
-			EndpointName:      endpoint.Name,
-			HostName:          cnameFqdnHappy,
-			ProfileName:       cdnProfile.Name,
-			ResourceGroupName: webResourceGrp.Name,
+		// Utilize the azure legacy provider since it supports setting up auto-TLS for custom domains
+		// azure-native provider strangely lacks support for CDN-managed TLS on custom domains... pushing front door? $$$
+		cdnManagedHttps := legacycdn.EndpointCustomDomainCdnManagedHttpsArgs{
+			CertificateType: pulumi.String("Dedicated"),
+			ProtocolType:    pulumi.String("ServerNameIndication"),
+			TlsVersion:      pulumi.String("TLS12"),
 		}
-		cdnCustDomain, err := cdn.NewCustomDomain(ctx, siteKey+envKey, &cdnCustDomainArgs)
+		endpointCustomDomainArgs := legacycdn.EndpointCustomDomainArgs{
+			CdnEndpointId:   endpoint.ID(),
+			HostName:        cnameFqdnHappy,
+			CdnManagedHttps: cdnManagedHttps,
+		}
+		_, err = legacycdn.NewEndpointCustomDomain(ctx, siteKey+envKey, &endpointCustomDomainArgs)
 		if err != nil {
-			fmt.Printf("ERROR: creating custom domain %s for CDN endpoint %v failed using args: %v\n",
-				siteKey+envKey, cdnCustDomain.Name, cdnCustDomainArgs)
-			return err
+			fmt.Printf("ERROR: creating custom domain for CDN endpoint failed using args: %v\n",
+				endpointCustomDomainArgs)
 		}
 
 		return nil
