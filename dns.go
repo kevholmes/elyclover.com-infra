@@ -77,7 +77,8 @@ func createCNAMERecordPointingAtCdnEndpoint(ctx *pulumi.Context, dnsRG string, d
 
 func createARecordPointingAtCdnResourceID(ctx *pulumi.Context, dnsRG string, dz *dns.LookupZoneResult, tg pulumi.StringOutput, envKey string, siteKey string) (record *dns.ARecord, err error) {
 	dnsRecordArgs := dns.ARecordArgs{
-		Name:              pulumi.String(envKey),
+		//Name:            pulumi.String(envKey),
+		Name:              pulumi.String("@"),
 		ZoneName:          pulumi.String(dz.Name),
 		ResourceGroupName: pulumi.String(dnsRG),
 		Ttl:               pulumi.Int(300), // 5 minutes
