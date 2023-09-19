@@ -102,7 +102,7 @@ func main() {
 			ProfileName:                cdnProfile.Name,
 			ResourceGroupName:          webResourceGrp.Name,
 			OriginHostHeader:           staticEndpoint,
-			IsHttpAllowed:              pulumi.Bool(false),
+			IsHttpAllowed:              pulumi.Bool(true),
 			IsHttpsAllowed:             pulumi.Bool(true),
 			QueryStringCachingBehavior: nativecdn.QueryStringCachingBehaviorIgnoreQueryString,
 			IsCompressionEnabled:       pulumi.Bool(true),
@@ -110,8 +110,11 @@ func main() {
 				pulumi.String("text/plain"),
 				pulumi.String("text/html"),
 				pulumi.String("text/css"),
-				pulumi.String("application/x-javascript"),
 				pulumi.String("text/javascript"),
+				pulumi.String("application/x-javascript"),
+				pulumi.String("application/javascript"),
+				pulumi.String("application/json"),
+				pulumi.String("image/svg+xml"),
 			},
 		}
 		endpoint, err := nativecdn.NewEndpoint(ctx, siteKey+envKey, &cdnEndPointArgs)
