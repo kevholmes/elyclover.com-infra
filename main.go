@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	// check for DEBUG mode in local execution environment
+	// Check for DEBUG mode in local execution environment
 	isDEBUG := os.Getenv("DEBUG")
 	if isDEBUG == "true" {
 		fmt.Println("DEBUG: Debug console logging enabled!")
@@ -45,7 +45,7 @@ func main() {
 			return err
 		}
 
-		// strip leading 'https://' and trailing '/' from web endpoint address
+		// Strip leading 'https://' and trailing '/' from web endpoint address
 		// for the Storage Account's static website URL
 		staticEndpoint := stripWebStorageEndPointUrl(storageAccount)
 
@@ -61,7 +61,7 @@ func main() {
 			return err
 		}
 
-		// look up DNS zone based on pulumi stack config var for external resource group that houses DNS records
+		// Look up DNS zone based on pulumi stack config var for external resource group that houses DNS records
 		dnsRG := cfg.Require("dnsResourceGroup")
 		dnsLookupZone := cfg.Require("dnsZoneName")
 		dnsZone, err := lookupDnsZone(ctx, dnsRG, dnsLookupZone)
@@ -69,7 +69,7 @@ func main() {
 			return err
 		}
 
-		// set up domains depending on env
+		// Set up domains depending on env
 		fqdn, err := createDnsRecordByEnv(ctx, dnsRG, dnsZone, endpoint, envKey, siteKey)
 		if err != nil {
 			return err

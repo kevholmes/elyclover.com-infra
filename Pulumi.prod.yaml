@@ -1,0 +1,10 @@
+config:
+  # azure native provider
+  azure-native:location: CentralUS
+  # classic azure provider (tf-like)
+  azure:location: CentralUS
+  # web project specific config items
+  elyclover.com-infra:siteKey: cloverstack
+  elyclover.com-infra:siteName: cloverstack.dev
+  elyclover.com-infra:dnsResourceGroup: root
+  elyclover.com-infra:dnsZoneName: cloverstack.dev
