@@ -25,7 +25,7 @@ func lookupDnsZone(ctx *pulumi.Context, rg string, lz string) (lzResult *dns.Loo
 func createDnsRecordByEnv(ctx *pulumi.Context, dnsRG string, dz *dns.LookupZoneResult, ep *cdn.Endpoint, envKey string, siteKey string) (d pulumi.StringOutput, err error) {
 	fqdnErr := fmt.Errorf("passed FQDN string didn't include trailing '.' did the Azure API change?")
 	switch envKey {
-	case "prod": // apex domain for prod eg tld.com requires A record referencing Azure resource
+	case "prod": // apex domain for prod eg tld.com uses A record referencing Azure resource
 		// create A record pointing at CDN Endpoint resource ID
 		dnsRecord, err := createARecordPointingAtCdnResourceID(ctx, dnsRG, dz, pulumi.StringOutput(ep.ID()), envKey, siteKey)
 		if err != nil {

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/pulumi/pulumi-azure-native-sdk/authorization/v2"
+	"github.com/pulumi/pulumi-azuread/sdk/v5/go/azuread"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi/config"
 )
@@ -75,10 +77,40 @@ func main() {
 			return err
 		}
 
-		// Add Custom Domain to CDN to set up automatic TLS termination/cert rotation
-		_, err = newEndpointCustomDomain(ctx, siteKey+envKey, endpoint, fqdn)
-		if err != nil {
-			return err
+		// Set up TLS depending on environment - auto-tls for Azure CDN Classic doesn't support Apex domains :(
+		switch envKey {
+		case "prod":
+			// Register Azure CDN Application as Service Principal in Azure Active Directory tenant so we can grant it access to scoped Azure KV secrets
+			cdnId := cfg.Require("Microsoft.AzureFrontDoor-Cdn")
+			nsp, err := azuread.NewServicePrincipal(ctx, cdnId, &azuread.ServicePrincipalArgs{
+				ApplicationId: pulumi.String(cdnId),
+				UseExisting:   pulumi.Bool(false),
+				Description:   pulumi.String("Service Principal tied to built-in Azure CDN/FD Application ID/product"),
+			})
+			if err != nil {
+				return err
+			}
+			keyVaultScope := pulumi.Sprintf("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.KeyVault/vaults/%s",
+				cfg.Require("keyVaultAzureSubscription"), cfg.Require("keyvaultResourceGroup"), cfg.Require("keyVaultName"))
+			// assign predefined "Key Vault Secret User" RoleDefinitionId to Service Principal we just created
+			// https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#key-vault-secrets-user
+			_, err = authorization.NewRoleAssignment(ctx, "AzureFDCDNreadKVCerts", &authorization.RoleAssignmentArgs{
+				PrincipalId:      nsp.ID(),
+				PrincipalType:    pulumi.String("ServicePrincipal"),
+				RoleDefinitionId: pulumi.String("/providers/Microsoft.Authorization/roleDefinitions/4633458b-17de-408a-b874-0445c86b69e6"),
+				Scope:            keyVaultScope,
+			})
+			if err != nil {
+				return err
+			}
+			// now create custom domain using user-provided certificate. possibly refactor newEndpointCustomDomain?
+		default:
+			// newEndpointCustomDomain() will need to be refactored to support conditional for auto-tls setup
+			// Add Custom Domain to CDN to set up automatic TLS termination/cert rotation
+			_, err = newEndpointCustomDomain(ctx, siteKey+envKey, endpoint, fqdn)
+			if err != nil {
+				return err
+			}
 		}
 
 		return nil
