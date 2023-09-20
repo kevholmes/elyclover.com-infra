@@ -8,6 +8,52 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
+// TODO: add support for rules to forward all traffic to https
+// https://learn.microsoft.com/en-us/azure/cdn/cdn-standard-rules-engine?toc=%2Fazure%2Ffrontdoor%2FTOC.json
+func forwardAllCdnHttpToHttps(ctx *pulumi.Context, azureRg pulumi.StringOutput, cdnProfileName pulumi.StringOutput) (err error) {
+	// create required ruleset that contains individual rules
+	name := "httpToHttps"
+	rs, err := nativecdn.NewRuleSet(ctx, "ruleSet", &nativecdn.RuleSetArgs{
+		ProfileName:       cdnProfileName,
+		ResourceGroupName: azureRg,
+		RuleSetName:       pulumi.String(name),
+	})
+	if err != nil {
+		return err
+	}
+	// define conditions and actions taken with rules
+	// condition to detect http requests
+	redirectCondition := nativecdn.DeliveryRuleRequestSchemeCondition{
+		Name: "RequestScheme",
+		Parameters: nativecdn.RequestSchemeMatchConditionParameters{
+			MatchValues: []string{"HTTP"},
+			Operator:    "Equal",
+		},
+	}
+	// action to redirect to https
+	https := "Https"
+	redirectAction := nativecdn.UrlRedirectAction{
+		Name: "UrlRedirect",
+		Parameters: nativecdn.UrlRedirectActionParameters{
+			RedirectType:        "Found",
+			DestinationProtocol: &https,
+		},
+	}
+	// populate ruleset with http -> https redirect rule
+	_, err = nativecdn.NewRule(ctx, "rule", &nativecdn.RuleArgs{
+		Conditions:        pulumi.Array{},
+		Actions:           pulumi.Array{},
+		Order:             pulumi.Int(1),
+		ProfileName:       cdnProfileName,
+		ResourceGroupName: azureRg,
+		RuleName:          pulumi.String(name),
+		RuleSetName:       rs.Name,
+	})
+	if err != nil {
+		return err
+	}
+}
+
 func createCdnProfile(ctx *pulumi.Context, cdnName string, azureRg pulumi.StringOutput) (profile *nativecdn.Profile, err error) {
 	var cdnProfileArgs = nativecdn.ProfileArgs{
 		Location:          pulumi.String("global"),
