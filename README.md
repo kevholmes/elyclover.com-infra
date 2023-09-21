@@ -50,3 +50,17 @@ automatically in a fully automated pipeline when I get the time.
 ```bash
 sops file.enc.yml
 ```
+
+## pre-commit hooks
+
+### ggshield
+
+This will auto-detect any potential secrets before they make it into a commit.
+
+The first time I ran this I had to auth like so:
+
+```bash
+# ggshield is located in a unique folder to each environment installed as a python venv by pre-commit tooling
+# GGSHIELD=$(find ~/.cache -name ggshield | grep bin)
+$GGSHIELD auth login
+```
