@@ -1,3 +1,7 @@
 name: elyclover.com-infra
 runtime: go
 description: Azure native webhosting for elyclover.com with Go
+config:
+  elyclover.com-infra:ghAppSrcProjectPath: "kevholmes/elyclover.com"
+  elyclover.com-infra:AzSubScriptionIdWeb: df058eb7-0193-43d2-b1ff-937439336e86
+  elyclover.com-infra:AzTenantId: 6088cb1f-43c7-4299-9378-4946a45e93d1

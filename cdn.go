@@ -36,9 +36,9 @@ func createCdnEndpoint(ctx *pulumi.Context, epName string, cdnProfile *nativecdn
 	// set up single delivery rule which forwards all HTTP traffic to HTTPS on CDN endpoint
 	https := fmt.Sprintf("%s", nativecdn.DestinationProtocolHttps)
 	http := fmt.Sprintf("%s", nativecdn.DestinationProtocolHttp)
-	deliveryRuleName := fmt.Sprintf("%sTo%s", http, https)
+	deliveryRuleName := pulumi.Sprintf("%sTo%s", http, https)
 	deliveryRule := nativecdn.DeliveryRuleArgs{
-		Name:  pulumi.String(deliveryRuleName),
+		Name:  deliveryRuleName,
 		Order: pulumi.Int(1),
 		Conditions: pulumi.All(nativecdn.DeliveryRuleRequestSchemeCondition{
 			Name: "RequestScheme",
