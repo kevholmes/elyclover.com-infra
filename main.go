@@ -113,6 +113,14 @@ func main() {
 			}
 		}
 
+		// create Service Principal to be used in CI/CD process (uploading new content, invalidating cdn cache)
+		// _, err := generateCICDServicePrincipal()
+
+		// export service principal secret/id, cdn profile/endpoint, resource group, storage acct
+		// to GitHub repo Deployment secrets/vars where Actions build and deploy to each environment
+		// based on gitops flow of PR (dev) -> Release PR (staging) -> Release (prod)
+		//_, err := exportDeployEnvDatatToGitHubRepo()
+
 		return nil
 	})
 }
