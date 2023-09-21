@@ -34,12 +34,18 @@ func generateCICDServicePrincipal(ctx *pulumi.Context, sa *storage.StorageAccoun
 	}
 
 	// authorize new SP to modify the resources required to deploy code to this project
-	_, err = authorization.NewRoleAssignment(ctx, cicd+"-role", &authorization.RoleAssignmentArgs{
-		PrincipalId:      nsp.ServicePrincipal.ID(),
-		PrincipalType:    pulumi.String("ServicePrincipal"),
-		RoleDefinitionId: pulumi.String("/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe"),
-		Scope:            sa.ID(),
-	})
+	roleAssignments := map[string]string{
+		cicd + "-storagerole": "/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe",
+		cicd + "-cdnrole":     "/providers/Microsoft.Authorization/roleDefinitions/426e0c7f-0c7e-4658-b36f-ff54d6c29b45",
+	}
+	for k, v := range roleAssignments {
+		_, err = authorization.NewRoleAssignment(ctx, k, &authorization.RoleAssignmentArgs{
+			PrincipalId:      nsp.ServicePrincipal.ID(),
+			PrincipalType:    pulumi.String("ServicePrincipal"),
+			RoleDefinitionId: pulumi.String(v),
+			Scope:            sa.ID(),
+		})
+	}
 	if err != nil {
 		return nsp, err
 	}
