@@ -40,3 +40,13 @@ pulumi stack ls
 pulumi stack select dev
 pulumi up
 ```
+
+## SOPS usage
+
+This is preliminary. There are no "secrets" in here yet. I will be importing the TLS keys later that are used
+for the root domain CDN endpoint at <https://elyclover.com>, those will be SOPS encrypted at-rest and eventually imported by Pulumi
+automatically in a fully automated pipeline when I get the time.
+
+```bash
+sops file.enc.yml
+```
