@@ -1,6 +1,6 @@
 module elyclover.com-infra
 
-go 1.20
+go 1.21
 
 require (
 	github.com/pulumi/pulumi-azure-native-sdk/authorization/v2 v2.8.0
