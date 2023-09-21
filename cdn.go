@@ -2,57 +2,12 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	nativecdn "github.com/pulumi/pulumi-azure-native-sdk/cdn/v2"
 	legacycdn "github.com/pulumi/pulumi-azure/sdk/v5/go/azure/cdn"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
-
-// TODO: add support for rules to forward all traffic to https
-// https://learn.microsoft.com/en-us/azure/cdn/cdn-standard-rules-engine?toc=%2Fazure%2Ffrontdoor%2FTOC.json
-func forwardAllCdnHttpToHttps(ctx *pulumi.Context, azureRg pulumi.StringOutput, cdnProfileName pulumi.StringOutput) (err error) {
-	// create required ruleset that contains individual rules
-	name := "httpToHttps"
-	rs, err := nativecdn.NewRuleSet(ctx, "ruleSet", &nativecdn.RuleSetArgs{
-		ProfileName:       cdnProfileName,
-		ResourceGroupName: azureRg,
-		RuleSetName:       pulumi.String(name),
-	})
-	if err != nil {
-		return err
-	}
-	// define conditions and actions taken with rules
-	// condition to detect http requests
-	redirectCondition := nativecdn.DeliveryRuleRequestSchemeCondition{
-		Name: "RequestScheme",
-		Parameters: nativecdn.RequestSchemeMatchConditionParameters{
-			MatchValues: []string{"HTTP"},
-			Operator:    "Equal",
-		},
-	}
-	// action to redirect to https
-	https := "Https"
-	redirectAction := nativecdn.UrlRedirectAction{
-		Name: "UrlRedirect",
-		Parameters: nativecdn.UrlRedirectActionParameters{
-			RedirectType:        "Found",
-			DestinationProtocol: &https,
-		},
-	}
-	// populate ruleset with http -> https redirect rule
-	_, err = nativecdn.NewRule(ctx, "rule", &nativecdn.RuleArgs{
-		Conditions:        pulumi.Array{},
-		Actions:           pulumi.Array{},
-		Order:             pulumi.Int(1),
-		ProfileName:       cdnProfileName,
-		ResourceGroupName: azureRg,
-		RuleName:          pulumi.String(name),
-		RuleSetName:       rs.Name,
-	})
-	if err != nil {
-		return err
-	}
-}
 
 func createCdnProfile(ctx *pulumi.Context, cdnName string, azureRg pulumi.StringOutput) (profile *nativecdn.Profile, err error) {
 	var cdnProfileArgs = nativecdn.ProfileArgs{
@@ -78,6 +33,34 @@ func createCdnEndpoint(ctx *pulumi.Context, epName string, cdnProfile *nativecdn
 			HostName: origin,
 			Name:     pulumi.String("origin1"),
 		}}
+	// set up single delivery rule which forwards all HTTP traffic to HTTPS on CDN endpoint
+	https := fmt.Sprintf("%s", nativecdn.DestinationProtocolHttps)
+	http := fmt.Sprintf("%s", nativecdn.DestinationProtocolHttp)
+	deliveryRuleName := fmt.Sprintf("%sTo%s", http, https)
+	deliveryRule := nativecdn.DeliveryRuleArgs{
+		Name:  pulumi.String(deliveryRuleName),
+		Order: pulumi.Int(1),
+		Conditions: pulumi.All(nativecdn.DeliveryRuleRequestSchemeCondition{
+			Name: "RequestScheme",
+			Parameters: nativecdn.RequestSchemeMatchConditionParameters{
+				MatchValues: []string{strings.ToUpper(http)},
+				Operator:    "Equal",
+				TypeName:    "DeliveryRuleRequestSchemeConditionParameters",
+			},
+		}),
+		Actions: pulumi.All(nativecdn.UrlRedirectAction{
+			Name: "UrlRedirect",
+			Parameters: nativecdn.UrlRedirectActionParameters{
+				RedirectType:        "Found",
+				DestinationProtocol: &https,
+				TypeName:            "DeliveryRuleUrlRedirectActionParameters",
+			},
+		}),
+	}
+	deliveryPolicy := nativecdn.EndpointPropertiesUpdateParametersDeliveryPolicyArgs{
+		Description: pulumi.String("delivery policy that forwards all http to https at CDN-level"),
+		Rules:       nativecdn.DeliveryRuleArray{deliveryRule},
+	}
 	cdnEndPointArgs := nativecdn.EndpointArgs{
 		Origins:                    originsArgs,
 		ProfileName:                cdnProfile.Name,
@@ -85,6 +68,7 @@ func createCdnEndpoint(ctx *pulumi.Context, epName string, cdnProfile *nativecdn
 		OriginHostHeader:           origin,
 		IsHttpAllowed:              pulumi.Bool(true),
 		IsHttpsAllowed:             pulumi.Bool(true),
+		DeliveryPolicy:             deliveryPolicy,
 		QueryStringCachingBehavior: nativecdn.QueryStringCachingBehaviorIgnoreQueryString,
 		IsCompressionEnabled:       pulumi.Bool(true),
 		ContentTypesToCompress: pulumi.StringArray{
