@@ -4,7 +4,6 @@ import (
 	"github.com/pulumi/pulumi-azure-native-sdk/authorization/v2"
 	"github.com/pulumi/pulumi-azure-native-sdk/storage/v2"
 	"github.com/pulumi/pulumi-azuread/sdk/v5/go/azuread"
-	"github.com/pulumi/pulumi-random/sdk/v4/go/random"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -17,14 +16,16 @@ type ServicePrincipalEnvelope struct {
 func generateCICDServicePrincipal(ctx *pulumi.Context, sa *storage.StorageAccount) (nsp ServicePrincipalEnvelope, err error) {
 	cicd := "cicd-actions"
 
-	azGuid, err := random.NewRandomUuid(ctx, "CI/CD Service Principal GUID", nil)
+	app, err := azuread.NewApplication(ctx, cicd, &azuread.ApplicationArgs{
+		DisplayName: pulumi.String(cicd),
+	})
 	if err != nil {
 		return nsp, err
 	}
 
 	spDesc := pulumi.Sprintf("Service Principal used for CI/CD purposes within %s-%s", ctx.Project(), ctx.Stack())
 	nspArgs := azuread.ServicePrincipalArgs{
-		ApplicationId: azGuid.Result,
+		ApplicationId: app.ApplicationId,
 		UseExisting:   pulumi.Bool(false),
 		Description:   spDesc,
 	}
@@ -52,7 +53,7 @@ func generateCICDServicePrincipal(ctx *pulumi.Context, sa *storage.StorageAccoun
 
 	// generate password / client secret for Service Principal
 	nsp.ServicePrincipalPass, err = azuread.NewServicePrincipalPassword(ctx, cicd+"-secret", &azuread.ServicePrincipalPasswordArgs{
-		ServicePrincipalId: nsp.ServicePrincipal.ApplicationId,
+		ServicePrincipalId: nsp.ServicePrincipal.ID(),
 	})
 	if err != nil {
 		return nsp, err
