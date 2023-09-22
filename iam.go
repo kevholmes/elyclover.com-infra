@@ -14,7 +14,7 @@ type ServicePrincipalEnvelope struct {
 }
 
 // create an Azure Service Principal to be used by CI/CD for deploying built code, expiring CDN content
-func generateCICDServicePrincipal(ctx *pulumi.Context, sa *storage.StorageAccount) (nsp *ServicePrincipalEnvelope, err error) {
+func generateCICDServicePrincipal(ctx *pulumi.Context, sa *storage.StorageAccount) (nsp ServicePrincipalEnvelope, err error) {
 	cicd := "cicd-actions"
 
 	azGuid, err := random.NewRandomUuid(ctx, "CI/CD Service Principal GUID", nil)

@@ -1,8 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-
 	"github.com/pulumi/pulumi-azure-native-sdk/cdn/v2"
 	"github.com/pulumi/pulumi-azure-native-sdk/resources/v2"
 	"github.com/pulumi/pulumi-azure-native-sdk/storage/v2"
@@ -40,7 +38,7 @@ type AzureCredentials struct {
 	MgmtEpUrl            pulumi.StringInput `json:"managementEndpointUrl"`
 }
 
-func exportDeployEnvDataToGitHubRepo(ctx *pulumi.Context, cfg *config.Config, sp *ServicePrincipalEnvelope, rg *resources.ResourceGroup, sa *storage.StorageAccount, cdnprof *cdn.Profile, ep *cdn.Endpoint) (err error) {
+func exportDeployEnvDataToGitHubRepo(ctx *pulumi.Context, cfg *config.Config, sp ServicePrincipalEnvelope, rg *resources.ResourceGroup, sa *storage.StorageAccount, cdnprof *cdn.Profile, ep *cdn.Endpoint) (err error) {
 	// validate repo
 	repoPath := cfg.Require("ghAppSrcProjectPath")
 	repo, err := github.LookupRepository(ctx, &github.LookupRepositoryArgs{
@@ -74,17 +72,13 @@ func exportDeployEnvDataToGitHubRepo(ctx *pulumi.Context, cfg *config.Config, sp
 		GalleryEpUrl:         pulumi.String("https://gallery.azure.com/"),
 		MgmtEpUrl:            pulumi.String("https://management.core.windows.net/"),
 	}
-	azCredsStr, err := json.Marshal(azCreds)
-	if err != nil {
-		return err
-	}
 
 	// create Actions Deployment Environment Secret for Azure SP that will be deploying via Actions workflows
 	_, err = github.NewActionsEnvironmentSecret(ctx, "AZURE_CREDENTIALS", &github.ActionsEnvironmentSecretArgs{
 		Repository:     pulumi.String(repo.Name),
 		SecretName:     pulumi.String("AZURE_CREDENTIALS"),
 		Environment:    repoEnv.Environment,
-		PlaintextValue: pulumi.Sprintf("%s", azCredsStr),
+		PlaintextValue: pulumi.JSONMarshal(azCreds),
 	})
 	if err != nil {
 		return err
