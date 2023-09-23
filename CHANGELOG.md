@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/kevholmes/elyclover.com-infra/compare/v1.0.0...v1.1.0) (2023-09-23)
+
+
+### Features
+
+* automate service principal creation, export to github repo var/secrets for ci/cd workflows ([#10](https://github.com/kevholmes/elyclover.com-infra/issues/10)) ([269e1f7](https://github.com/kevholmes/elyclover.com-infra/commit/269e1f73349a17ade88f0bc69415a70f9277329d))
+
 ## 1.0.0 (2023-09-21)
 
 
