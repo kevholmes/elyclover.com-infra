@@ -1,9 +1,3 @@
 config:
-  # azure native provider
-  azure-native:location: CentralUS
-  # classic azure provider (tf-like)
-  azure:location: CentralUS
-  elyclover.com-infra:siteKey: cloverstack
-  elyclover.com-infra:siteName: cloverstack.dev
-  elyclover.com-infra:dnsResourceGroup: root
-  elyclover.com-infra:dnsZoneName: cloverstack.dev
+  github:token:
+    secure: AAABADWF3NYlGM5QKWdUrtmLK7IfScM4SQtWHfG4fiSB6vZ8nTGQ12vUzZqTCsh5f2tqXHUJ7Dc20SQ1F/EUVSpwpcJ4ZueS4lS2sQaMnwM0mos5jrMa3Ef//neOeMf4d7cjvZ64TdOvhp+LvivnZC8h2QlVp1bZqN/0cEg=

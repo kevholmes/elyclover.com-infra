@@ -9,6 +9,7 @@ require (
 	github.com/pulumi/pulumi-azure-native-sdk/storage/v2 v2.6.0
 	github.com/pulumi/pulumi-azure/sdk/v5 v5.49.0
 	github.com/pulumi/pulumi-azuread/sdk/v5 v5.41.0
+	github.com/pulumi/pulumi-github/sdk/v5 v5.17.0
 	github.com/pulumi/pulumi/sdk/v3 v3.81.0
 )
 
@@ -69,6 +70,7 @@ require (
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/cobra v1.6.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/stretchr/objx v0.5.0 // indirect
 	github.com/texttheater/golang-levenshtein v1.0.1 // indirect
 	github.com/tweekmonster/luser v0.0.0-20161003172636-3fa38070dbd7 // indirect
 	github.com/uber/jaeger-client-go v2.30.0+incompatible // indirect

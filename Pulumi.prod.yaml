@@ -1,17 +1,9 @@
 config:
-  # azure native provider
-  azure-native:location: CentralUS
-  # classic azure provider (tf-like)
-  azure:location: CentralUS
-  # web project specific config items
-  elyclover.com-infra:siteKey: cloverstack
-  elyclover.com-infra:siteName: cloverstack.dev
-  elyclover.com-infra:dnsResourceGroup: root
-  elyclover.com-infra:dnsZoneName: cloverstack.dev
-  # prod-cdn specific items
+  # prod-cdn specific items (other envs use free / auto-generated TLS through CDN Classic)
   # AZ FD/CDN ID comes from: https://learn.microsoft.com/en-us/azure/cdn/cdn-custom-ssl?toc=%2Fazure%2Ffrontdoor%2FTOC.json&tabs=option-2-enable-https-with-your-own-certificate
   elyclover.com-infra:Microsoft.AzureFrontDoor-Cdn: 205478c0-bd83-4e1b-a9d6-db63a3e1e1c8
-  elyclover.com-infra:keyVaultName: elyclover-kv
   elyclover.com-infra:keyVaultAzureSubscription: df058eb7-0193-43d2-b1ff-937439336e86
+  elyclover.com-infra:keyVaultName: elyclover-kv
   elyclover.com-infra:keyvaultResourceGroup: root
-  elyclover.com-infra:keyVaultsLoc: "/subscriptions/$azureSubscription/resourceGroups/root/providers/Microsoft.KeyVault/vaults/$keyVaultName"
+  github:token:
+    secure: AAABALUZicxKxjn0TkjWVU+L79eHIid/l3kt/CNDpISITEQlITsMZAlOIyHae4P77D03rcs0+/7n94yb/5D6I4P8JbA4JL8+HXHx1Yt+hdB6zbs+T5ZL+SyRrvGnKmXNGv3mgZdhH8acVp9oax/eUAjLUrtekqMh+EOXTiI=
