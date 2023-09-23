@@ -82,7 +82,7 @@ func main() {
 		}
 
 		// Create+authorize Service Principal to be used in CI/CD process (uploading new content, invalidating cdn cache)
-		cicdSp, err := generateCICDServicePrincipal(ctx, storageAccount)
+		cicdSp, err := generateCICDServicePrincipal(ctx, storageAccount, endpoint)
 		if err != nil {
 			return err
 		}
