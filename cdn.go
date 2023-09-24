@@ -7,10 +7,17 @@ import (
 	"github.com/pulumi/pulumi-azure-native-sdk/authorization/v2"
 	nativecdn "github.com/pulumi/pulumi-azure-native-sdk/cdn/v2"
 	legacycdn "github.com/pulumi/pulumi-azure/sdk/v5/go/azure/cdn"
+	legacykeyvault "github.com/pulumi/pulumi-azure/sdk/v5/go/azure/keyvault"
 	"github.com/pulumi/pulumi-azuread/sdk/v5/go/azuread"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi/config"
 )
+
+type epCfgs struct {
+	userManaged legacycdn.EndpointCustomDomainUserManagedHttpsArgs
+	cdnManaged  legacycdn.EndpointCustomDomainCdnManagedHttpsArgs
+	domainArgs  legacycdn.EndpointCustomDomainArgs
+}
 
 func createCdnProfile(ctx *pulumi.Context, cdnName string, azureRg pulumi.StringOutput) (profile *nativecdn.Profile, err error) {
 	var cdnProfileArgs = nativecdn.ProfileArgs{
@@ -95,24 +102,42 @@ func createCdnEndpoint(ctx *pulumi.Context, epName string, cdnProfile *nativecdn
 	return
 }
 
-func newEndpointCustomDomain(ctx *pulumi.Context, epdName string, endpoint *nativecdn.Endpoint, domain pulumi.StringOutput) (epd *legacycdn.EndpointCustomDomain, err error) {
+func newEndpointCustomDomain(ctx *pulumi.Context, epdName string, endpoint *nativecdn.Endpoint, domain pulumi.StringOutput,
+	cfg *config.Config) (epd *legacycdn.EndpointCustomDomain, err error) {
 	// Utilize the azure legacy provider since it supports setting up auto-TLS for CDN custom domains
 	// azure-native provider strangely lacks support for CDN-managed TLS on custom domains... pushing front door? $$$
-	cdnManagedHttps := legacycdn.EndpointCustomDomainCdnManagedHttpsArgs{
-		CertificateType: pulumi.String("Dedicated"),
-		ProtocolType:    pulumi.String("ServerNameIndication"),
-		TlsVersion:      pulumi.String("TLS12"),
+	kId, err := legacykeyvault.GetCertifiate(ctx, &legacykeyvault.LookupCertificateArgs{
+		KeyVaultId: cfg.Require("keyVaultName"),
+		SecretName: cfg.Require("prodCertName"),
+	})
+	epCfg := epCfgs{
+		userManaged: legacycdn.EndpointCustomDomainUserManagedHttpsArgs{
+			TlsVersion:       pulumi.String("TLS12"),
+			KeyVaultSecretId: kId.Id,
+		},
+		cdnManaged: legacycdn.EndpointCustomDomainCdnManagedHttpsArgs{
+			CertificateType: pulumi.String("Dedicated"),
+			ProtocolType:    pulumi.String("ServerNameIndication"),
+			TlsVersion:      pulumi.String("TLS12"),
+		},
+		domainArgs: legacycdn.EndpointCustomDomainArgs{
+			CdnEndpointId: endpoint.ID(),
+			HostName:      domain,
+			// set user managed or cdn managed https based on stack (env)
+		},
 	}
-	endpointCustomDomainArgs := legacycdn.EndpointCustomDomainArgs{
-		CdnEndpointId:   endpoint.ID(),
-		HostName:        domain,
-		CdnManagedHttps: &cdnManagedHttps,
+	switch ctx.Stack() {
+	case "prod":
+		epCfg.domainArgs.UserManagedHttps = epCfg.userManaged
+	default:
+		epCfg.domainArgs.CdnManagedHttps = epCfg.cdnManaged
 	}
-	epd, err = legacycdn.NewEndpointCustomDomain(ctx, epdName, &endpointCustomDomainArgs)
+	epd, err = legacycdn.NewEndpointCustomDomain(ctx, epdName, &epCfg.domainArgs)
 	if err != nil {
 		fmt.Println("ERROR: creating custom domain for CDN endpoint failed")
 		return epd, err
 	}
+
 	return
 }
 
