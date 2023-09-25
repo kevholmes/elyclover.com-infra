@@ -46,8 +46,8 @@ func generateCICDServicePrincipal(ctx *pulumi.Context, sa *storage.StorageAccoun
 
 	// authorize new SP to modify any resources required to deploy code to this project
 	ra := []RoleAssignments{
-		{cicd + "-storagerole", StorageContributor, ep.ID()},
-		{cicd + "-cdnrole", CdnContributor, sa.ID()},
+		{cicd + "-storagerole", StorageContributor, sa.ID()},
+		{cicd + "-cdnrole", CdnContributor, ep.ID()},
 	}
 	for _, v := range ra {
 		_, err = authorization.NewRoleAssignment(ctx, v.Name, &authorization.RoleAssignmentArgs{

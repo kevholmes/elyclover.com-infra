@@ -12,6 +12,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi/config"
 )
 
+type epCfgs struct {
+	userManaged legacycdn.EndpointCustomDomainUserManagedHttpsArgs
+	cdnManaged  legacycdn.EndpointCustomDomainCdnManagedHttpsArgs
+	domainArgs  legacycdn.EndpointCustomDomainArgs
+}
+
 func createCdnProfile(ctx *pulumi.Context, cdnName string, azureRg pulumi.StringOutput) (profile *nativecdn.Profile, err error) {
 	var cdnProfileArgs = nativecdn.ProfileArgs{
 		Location:          pulumi.String("global"),
@@ -95,32 +101,54 @@ func createCdnEndpoint(ctx *pulumi.Context, epName string, cdnProfile *nativecdn
 	return
 }
 
-func newEndpointCustomDomain(ctx *pulumi.Context, epdName string, endpoint *nativecdn.Endpoint, domain pulumi.StringOutput) (epd *legacycdn.EndpointCustomDomain, err error) {
+func newEndpointCustomDomain(ctx *pulumi.Context, epdName string, endpoint *nativecdn.Endpoint, domain pulumi.StringOutput,
+	cfg *config.Config) (epd *legacycdn.EndpointCustomDomain, err error) {
 	// Utilize the azure legacy provider since it supports setting up auto-TLS for CDN custom domains
-	// azure-native provider strangely lacks support for CDN-managed TLS on custom domains... pushing front door? $$$
-	cdnManagedHttps := legacycdn.EndpointCustomDomainCdnManagedHttpsArgs{
-		CertificateType: pulumi.String("Dedicated"),
-		ProtocolType:    pulumi.String("ServerNameIndication"),
-		TlsVersion:      pulumi.String("TLS12"),
+	// azure-native provider strangely lacks support for CDN-managed TLS on custom domains
+	epCfg := epCfgs{
+		userManaged: legacycdn.EndpointCustomDomainUserManagedHttpsArgs{
+			TlsVersion: pulumi.String("TLS12"),
+		},
+		cdnManaged: legacycdn.EndpointCustomDomainCdnManagedHttpsArgs{
+			CertificateType: pulumi.String("Dedicated"),
+			ProtocolType:    pulumi.String("ServerNameIndication"),
+			TlsVersion:      pulumi.String("TLS12"),
+		},
+		domainArgs: legacycdn.EndpointCustomDomainArgs{
+			CdnEndpointId: endpoint.ID(),
+			HostName:      domain,
+			// set user managed or cdn managed https based on stack (env)
+		},
 	}
-	endpointCustomDomainArgs := legacycdn.EndpointCustomDomainArgs{
-		CdnEndpointId:   endpoint.ID(),
-		HostName:        domain,
-		CdnManagedHttps: &cdnManagedHttps,
+	switch ctx.Stack() {
+	// user managed endpoint https config (byo cert)
+	case "prod":
+		cert, err := getSecretByName(ctx, cfg.Require("keyVaultName"), cfg.Require("keyvaultResourceGroup"),
+			cfg.Require("prodCertName"))
+		if err != nil {
+			return epd, err
+		}
+		epCfg.userManaged.KeyVaultSecretId = pulumi.String(cert.Properties.SecretUri)
+		epCfg.domainArgs.UserManagedHttps = epCfg.userManaged
+	// azure cdn managed endpoint https config (auto-gen/rotated cert)
+	default:
+		epCfg.domainArgs.CdnManagedHttps = epCfg.cdnManaged
 	}
-	epd, err = legacycdn.NewEndpointCustomDomain(ctx, epdName, &endpointCustomDomainArgs)
+	epd, err = legacycdn.NewEndpointCustomDomain(ctx, epdName, &epCfg.domainArgs)
 	if err != nil {
 		fmt.Println("ERROR: creating custom domain for CDN endpoint failed")
 		return epd, err
 	}
+
 	return
 }
 
-// Non-prod environments use sub-domains (eg dev.tld.com) and Azure CDN (classic) will auto-generate and set up the TLS for us
+// Non-prod environments use sub-domains (eg dev.tld.com) and Azure CDN (classic) will auto-generate and set up the TLS for us.
 // Production uses an apex domain (eg tld.com) which Azure doesn't support free TLS certs + rotation on (:shrug:)
+// so we'll need to set up a Service Principal registered under the Azure CDN App profile and give it RBAC access to
+// an external Azure KeyVault resource that contains our pfx certificate needed for the prod tld.com domain.
 func setupTlsTermination(ctx *pulumi.Context, cfg *config.Config, ep *nativecdn.Endpoint, fqdn pulumi.StringOutput) (err error) {
-	switch ctx.Stack() {
-	case "prod":
+	if ctx.Stack() == "prod" {
 		// Register Azure CDN Application as Service Principal in AD/Entra tenant so it can fetch TLS pfx data in external Keystore
 		cdnId := cfg.Require("Microsoft.AzureFrontDoor-Cdn")
 		nsp, err := azuread.NewServicePrincipal(ctx, cdnId, &azuread.ServicePrincipalArgs{
@@ -131,11 +159,11 @@ func setupTlsTermination(ctx *pulumi.Context, cfg *config.Config, ep *nativecdn.
 		if err != nil {
 			return err
 		}
-		keyVaultScope := pulumi.Sprintf("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.KeyVault/vaults/%s",
-			cfg.Require("keyVaultAzureSubscription"), cfg.Require("keyvaultResourceGroup"), cfg.Require("keyVaultName"))
 		// assign predefined "Key Vault Secret User" RoleDefinitionId to Service Principal we just created
 		// https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#key-vault-secrets-user
-		// This allows Azure CDN to access the pfx keys we purchase/generate external to pulumi (until ACME support is native)
+		// This allows Azure CDN to access the pfx keys we purchase/generate external to pulumi (quite a bit cheaper than asking Azure to do it.)
+		keyVaultScope := pulumi.Sprintf("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.KeyVault/vaults/%s",
+			cfg.Require("keyVaultAzureSubscription"), cfg.Require("keyvaultResourceGroup"), cfg.Require("keyVaultName"))
 		_, err = authorization.NewRoleAssignment(ctx, "AzureFDCDNreadKVCerts", &authorization.RoleAssignmentArgs{
 			PrincipalId:      nsp.ID(),
 			PrincipalType:    pulumi.String("ServicePrincipal"),
@@ -145,13 +173,12 @@ func setupTlsTermination(ctx *pulumi.Context, cfg *config.Config, ep *nativecdn.
 		if err != nil {
 			return err
 		}
-	default:
-		// newEndpointCustomDomain() will need to be refactored to support conditional for auto-tls setup
-		// Add Custom Domain to CDN to set up automatic TLS termination/cert rotation
-		_, err = newEndpointCustomDomain(ctx, cfg.Require("siteKey")+ctx.Stack(), ep, fqdn)
-		if err != nil {
-			return err
-		}
+	}
+
+	// Add Custom Domain to CDN for prod or non-prod
+	_, err = newEndpointCustomDomain(ctx, cfg.Require("siteKey")+ctx.Stack(), ep, fqdn, cfg)
+	if err != nil {
+		return err
 	}
 
 	return

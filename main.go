@@ -75,7 +75,7 @@ func main() {
 			return err
 		}
 
-		// Set up TLS depending on environment
+		// Set up TLS depending on environment and custom domain types
 		err = setupTlsTermination(ctx, cfg, endpoint, fqdn)
 		if err != nil {
 			return err
