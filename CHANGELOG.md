@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/kevholmes/elyclover.com-infra/compare/v1.1.0...v1.1.1) (2023-09-25)
+
+
+### Bug Fixes
+
+* conditional tls setup for prod/nonprod ([#12](https://github.com/kevholmes/elyclover.com-infra/issues/12)) ([81ae0a5](https://github.com/kevholmes/elyclover.com-infra/commit/81ae0a52df238a76012df7a6edd3089fffaba74a))
+
 ## [1.1.0](https://github.com/kevholmes/elyclover.com-infra/compare/v1.0.0...v1.1.0) (2023-09-23)
 
 
