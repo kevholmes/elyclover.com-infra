@@ -31,7 +31,17 @@ func createDnsRecordByEnv(ctx *pulumi.Context, dnsRG string, dz *dns.LookupZoneR
 		if err != nil {
 			return d, err
 		}
-		// strip out trailing '.' from CNAME's returned FQDN string within Azure DNS API
+		// create CNAME 'cdnverify.tld.com' record
+		cdnVerify := "cdnverify"
+		cdnVerifyHostname := ep.HostName.ApplyT(func(h string) (r string) {
+			r = cdnVerify + "." + h
+			return
+		}).(pulumi.StringOutput)
+		_, err = createCNAMERecordPointingAtCdnEndpoint(ctx, dnsRG, dz, cdnVerifyHostname, cdnVerify, siteKey)
+		if err != nil {
+			return d, err
+		}
+		// strip out trailing '.' from A record returned FQDN string within Azure DNS API
 		d = dnsRecord.Fqdn.ApplyT(func(fqdn string) (string, error) {
 			h, found := strings.CutSuffix(fqdn, ".")
 			if !found {
@@ -77,7 +87,6 @@ func createCNAMERecordPointingAtCdnEndpoint(ctx *pulumi.Context, dnsRG string, d
 
 func createARecordPointingAtCdnResourceID(ctx *pulumi.Context, dnsRG string, dz *dns.LookupZoneResult, tg pulumi.StringOutput, envKey string, siteKey string) (record *dns.ARecord, err error) {
 	dnsRecordArgs := dns.ARecordArgs{
-		//Name:            pulumi.String(envKey),
 		Name:              pulumi.String("@"),
 		ZoneName:          pulumi.String(dz.Name),
 		ResourceGroupName: pulumi.String(dnsRG),
