@@ -7,7 +7,6 @@ import (
 	"github.com/pulumi/pulumi-azure-native-sdk/authorization/v2"
 	nativecdn "github.com/pulumi/pulumi-azure-native-sdk/cdn/v2"
 	legacycdn "github.com/pulumi/pulumi-azure/sdk/v5/go/azure/cdn"
-	legacykeyvault "github.com/pulumi/pulumi-azure/sdk/v5/go/azure/keyvault"
 	"github.com/pulumi/pulumi-azuread/sdk/v5/go/azuread"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi/config"
@@ -106,14 +105,15 @@ func newEndpointCustomDomain(ctx *pulumi.Context, epdName string, endpoint *nati
 	cfg *config.Config) (epd *legacycdn.EndpointCustomDomain, err error) {
 	// Utilize the azure legacy provider since it supports setting up auto-TLS for CDN custom domains
 	// azure-native provider strangely lacks support for CDN-managed TLS on custom domains... pushing front door? $$$
-	kId, err := legacykeyvault.GetCertifiate(ctx, &legacykeyvault.LookupCertificateArgs{
-		KeyVaultId: cfg.Require("keyVaultName"),
-		SecretName: cfg.Require("prodCertName"),
-	})
+	cert, err := getSecretByName(ctx, cfg.Require("keyVaultName"), cfg.Require("keyvaultResourceGroup"),
+		cfg.Require("prodCertName"))
+	if err != nil {
+		return epd, err
+	}
 	epCfg := epCfgs{
 		userManaged: legacycdn.EndpointCustomDomainUserManagedHttpsArgs{
 			TlsVersion:       pulumi.String("TLS12"),
-			KeyVaultSecretId: kId.Id,
+			KeyVaultSecretId: pulumi.String(cert.Id),
 		},
 		cdnManaged: legacycdn.EndpointCustomDomainCdnManagedHttpsArgs{
 			CertificateType: pulumi.String("Dedicated"),
