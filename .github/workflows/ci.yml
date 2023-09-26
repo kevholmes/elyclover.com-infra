@@ -25,4 +25,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: make lint-shell
-
+  make-lint-markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts
+      - run: npm install -g markdownlint-cli
+      - run: make lint-markdown
