@@ -9,7 +9,7 @@ require (
 	github.com/pulumi/pulumi-azure-native-sdk/resources/v2 v2.6.0
 	github.com/pulumi/pulumi-azure-native-sdk/storage/v2 v2.6.0
 	github.com/pulumi/pulumi-azure/sdk/v5 v5.49.0
-	github.com/pulumi/pulumi-azuread/sdk/v5 v5.41.0
+	github.com/pulumi/pulumi-azuread/sdk/v5 v5.42.0
 	github.com/pulumi/pulumi-github/sdk/v5 v5.17.0
 	github.com/pulumi/pulumi/sdk/v3 v3.81.0
 )
