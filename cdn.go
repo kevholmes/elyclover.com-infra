@@ -104,7 +104,7 @@ func createCdnEndpoint(ctx *pulumi.Context, epName string, cdnProfile *nativecdn
 func newEndpointCustomDomain(ctx *pulumi.Context, epdName string, endpoint *nativecdn.Endpoint, domain pulumi.StringOutput,
 	cfg *config.Config) (epd *legacycdn.EndpointCustomDomain, err error) {
 	// Utilize the azure legacy provider since it supports setting up auto-TLS for CDN custom domains
-	// azure-native provider strangely lacks support for CDN-managed TLS on custom domains
+	// azure-native provider strangely lacks support for CDN-managed TLS on custom domains...
 	epCfg := epCfgs{
 		userManaged: legacycdn.EndpointCustomDomainUserManagedHttpsArgs{
 			TlsVersion: pulumi.String("TLS12"),
@@ -117,23 +117,23 @@ func newEndpointCustomDomain(ctx *pulumi.Context, epdName string, endpoint *nati
 		domainArgs: legacycdn.EndpointCustomDomainArgs{
 			CdnEndpointId: endpoint.ID(),
 			HostName:      domain,
-			// set user managed or cdn managed https based on stack (env)
 		},
 	}
 	switch ctx.Stack() {
-	// user managed endpoint https config (byo cert)
+	// prod is byo certificate (self-managed)
 	case "prod":
-		cert, err := getSecretByName(ctx, cfg.Require("keyVaultName"), cfg.Require("keyvaultResourceGroup"),
-			cfg.Require("prodCertName"))
+		// import pfx certificate stored at rest in source control to Azure Key Vault
+		certSec, err := importPfxToKeyVault(ctx, cfg)
 		if err != nil {
 			return epd, err
 		}
-		epCfg.userManaged.KeyVaultSecretId = pulumi.String(cert.Properties.SecretUri)
+		epCfg.userManaged.KeyVaultSecretId = certSec.Properties.SecretUri()
 		epCfg.domainArgs.UserManagedHttps = epCfg.userManaged
-	// azure cdn managed endpoint https config (auto-gen/rotated cert)
+	// azure cdn-managed certificate (auto-gen/rotated)
 	default:
 		epCfg.domainArgs.CdnManagedHttps = epCfg.cdnManaged
 	}
+	// create new CDN endpoint custom domain depending on prod/nonprod settings configured above
 	epd, err = legacycdn.NewEndpointCustomDomain(ctx, epdName, &epCfg.domainArgs)
 	if err != nil {
 		fmt.Println("ERROR: creating custom domain for CDN endpoint failed")
