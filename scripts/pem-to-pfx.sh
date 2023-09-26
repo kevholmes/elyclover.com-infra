@@ -1,8 +1,5 @@
 #!/bin/bash
 # convert a pem cert to pfx type as Azure Key Vault would prefer them
-INKEY=$1
-INCRT=$2
-OUTPFX=$3
 
 echo "ex: ./pem-to-pfx.sh yourkey.key yourcrt.crt outpfx.pfx"
 

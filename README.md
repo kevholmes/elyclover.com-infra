@@ -43,12 +43,33 @@ pulumi up
 
 ## SOPS usage
 
-This is preliminary. There are no "secrets" in here yet. I will be importing the TLS keys later that are used
-for the root domain CDN endpoint at <https://elyclover.com>, those will be SOPS encrypted at-rest and eventually imported by Pulumi
-automatically in a fully automated pipeline when I get the time.
+I've included a makefile with an `encrypt` + `decrypt` target, and helper script at `scripts/sops.sh` to
+help handle basic use-cases. The SOPS project-wide config is located at `.sops.yaml` in the project's root.
+
+An Azure Key Vault + key is being used to encrypt/decrypt these secrets at rest. There's an addition to `.gitignore`
+to try and ensure decrypted files (ending in `.dec`) are not comitted if a user hasn't installed the GitGuardian pre-commit
+hook/check which would also catch an accidental secret being added to a commit/PR.
+
+### To decrypt if you are modifying infrastructure
 
 ```bash
-sops file.enc.yml
+make decrypt
+pulumi stack select prod
+pulumi up
+```
+
+### Basic cert rotation process
+
+```bash
+cd scripts
+./pem-to-pfx.sh yourkey.key yourcrt.crt outpfx.pfx.dec
+# this cert fileame is set in Pulumi.prod.yaml ->  elyclover.com-infra:prodPfxCertPath
+mv outpfx.pfx.dec ../assets/tls/
+cd ..
+pulumi stack select prod
+pulumi up
+make encrypt
+git add assets/tls
 ```
 
 ## pre-commit hooks

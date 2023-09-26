@@ -10,6 +10,8 @@ import (
 )
 
 // look up an AZ Key Vault Secret by name
+//
+//lint:ignore U1000 external type doesn't have compatible string method
 func getSecretByName(ctx *pulumi.Context, kv string, rg string, name string) (secret *keyvault.LookupSecretResult, err error) {
 	secret, err = keyvault.LookupSecret(ctx, &keyvault.LookupSecretArgs{
 		VaultName:         kv,
