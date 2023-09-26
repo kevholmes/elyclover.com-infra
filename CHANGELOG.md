@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/kevholmes/elyclover.com-infra/compare/v1.1.1...v1.2.0) (2023-09-26)
+
+
+### Features
+
+* add ci checks ([#23](https://github.com/kevholmes/elyclover.com-infra/issues/23)) ([84c38bc](https://github.com/kevholmes/elyclover.com-infra/commit/84c38bc911a79dc9f7002b9a0c0c569c35de66e2))
+* import apex domain pfx-type cert and utilize for azure cdn custom domain ep ([#21](https://github.com/kevholmes/elyclover.com-infra/issues/21)) ([b1f4041](https://github.com/kevholmes/elyclover.com-infra/commit/b1f40413ded72467eb6c798f08c8fd5f6f28e48e))
+
 ## [1.1.1](https://github.com/kevholmes/elyclover.com-infra/compare/v1.1.0...v1.1.1) (2023-09-25)
 
 
