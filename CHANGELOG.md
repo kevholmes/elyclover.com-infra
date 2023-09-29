@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/kevholmes/elyclover.com-infra/compare/v1.2.0...v1.2.1) (2023-09-29)
+
+
+### Bug Fixes
+
+* allow dependabot access to dev azure SP secret token ([#24](https://github.com/kevholmes/elyclover.com-infra/issues/24)) ([eb29d2f](https://github.com/kevholmes/elyclover.com-infra/commit/eb29d2fcbef6243b590020ae35ff6a4a02e9c6b3))
+* flaky pulumi resource diffs on cdn endpoint custom domain resource ([#27](https://github.com/kevholmes/elyclover.com-infra/issues/27)) ([b61aca0](https://github.com/kevholmes/elyclover.com-infra/commit/b61aca0b7f0c86fad2742428626fe605b09d6552))
+
 ## [1.2.0](https://github.com/kevholmes/elyclover.com-infra/compare/v1.1.1...v1.2.0) (2023-09-26)
 
 
