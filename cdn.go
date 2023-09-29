@@ -134,7 +134,12 @@ func newEndpointCustomDomain(ctx *pulumi.Context, epdName string, endpoint *nati
 		epCfg.domainArgs.CdnManagedHttps = epCfg.cdnManaged
 	}
 	// create new CDN endpoint custom domain depending on prod/nonprod settings configured above
-	epd, err = legacycdn.NewEndpointCustomDomain(ctx, epdName, &epCfg.domainArgs)
+	// we ignore changes here to "cdnEndpointId" due to spurious "diffs" caused by a capital "G" in resourceGroup URIs
+	// returned from Azure provider. I've found some bug reports in Terraform and Azure providers about this but I have
+	// a feeling it's due to mix/match of azure and azure-native provider for our CDN work. By adding it we
+	// avoid a constant cycle of Pulumi trying to destroy and re-create the Custom Domain which causes other
+	// issues due to the reliance on the CNAME record which the provider does not (appear?) pick up on, unfortunately.
+	epd, err = legacycdn.NewEndpointCustomDomain(ctx, epdName, &epCfg.domainArgs, pulumi.IgnoreChanges([]string{"cdnEndpointId"}))
 	if err != nil {
 		fmt.Println("ERROR: creating custom domain for CDN endpoint failed")
 		return epd, err
