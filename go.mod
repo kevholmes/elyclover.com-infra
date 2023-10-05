@@ -6,7 +6,7 @@ require (
 	github.com/pulumi/pulumi-azure-native-sdk/authorization/v2 v2.8.0
 	github.com/pulumi/pulumi-azure-native-sdk/cdn/v2 v2.8.0
 	github.com/pulumi/pulumi-azure-native-sdk/keyvault/v2 v2.8.0
-	github.com/pulumi/pulumi-azure-native-sdk/resources/v2 v2.6.0
+	github.com/pulumi/pulumi-azure-native-sdk/resources/v2 v2.10.0
 	github.com/pulumi/pulumi-azure-native-sdk/storage/v2 v2.8.0
 	github.com/pulumi/pulumi-azure/sdk/v5 v5.49.0
 	github.com/pulumi/pulumi-azuread/sdk/v5 v5.42.0
@@ -62,7 +62,7 @@ require (
 	github.com/pjbgf/sha1cd v0.3.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pkg/term v1.1.0 // indirect
-	github.com/pulumi/pulumi-azure-native-sdk/v2 v2.8.0 // indirect
+	github.com/pulumi/pulumi-azure-native-sdk/v2 v2.10.0 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/rogpeppe/go-internal v1.9.0 // indirect
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06 // indirect
