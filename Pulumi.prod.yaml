@@ -6,7 +6,7 @@ config:
   elyclover.com-infra:keyVaultName: elyclover-kv
   elyclover.com-infra:keyvaultResourceGroup: root
   # cert file path locally when stored at rest in source control
-  elyclover.com-infra:prodPfxCertPath: ./assets/tls/cloverstack_dev.pfx.dec
+  elyclover.com-infra:prodPfxCertPath: ./assets/tls/elyclover_com.pfx.dec
   # github provider configs
   github:token:
     secure: AAABALUZicxKxjn0TkjWVU+L79eHIid/l3kt/CNDpISITEQlITsMZAlOIyHae4P77D03rcs0+/7n94yb/5D6I4P8JbA4JL8+HXHx1Yt+hdB6zbs+T5ZL+SyRrvGnKmXNGv3mgZdhH8acVp9oax/eUAjLUrtekqMh+EOXTiI=
