@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/kevholmes/elyclover.com-infra/compare/v1.2.1...v1.3.0) (2023-10-07)
+
+
+### Features
+
+* migrate to elyclover.com ([#34](https://github.com/kevholmes/elyclover.com-infra/issues/34)) ([87a04a2](https://github.com/kevholmes/elyclover.com-infra/commit/87a04a21f42cecb3efd04156ab68731b660983fb))
+
 ## [1.2.1](https://github.com/kevholmes/elyclover.com-infra/compare/v1.2.0...v1.2.1) (2023-09-29)
 
 
