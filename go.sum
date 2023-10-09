@@ -147,8 +147,8 @@ github.com/pulumi/pulumi-azure-native-sdk/authorization/v2 v2.10.0 h1:e4PuOQ7v0/
 github.com/pulumi/pulumi-azure-native-sdk/authorization/v2 v2.10.0/go.mod h1:oGAM4I4zAdWMXJ5Cn7ALO4Wmc5Z/skXc05ZzwKmdGps=
 github.com/pulumi/pulumi-azure-native-sdk/cdn/v2 v2.10.0 h1:5Ek4iZcYS26S6GWl69IIxADpkawgwU7hV0AUjwN0JZY=
 github.com/pulumi/pulumi-azure-native-sdk/cdn/v2 v2.10.0/go.mod h1:9Xp5hvrof96ZOKEjhGHNDwhbS2pLCQZdrnMUbN12ZM8=
-github.com/pulumi/pulumi-azure-native-sdk/keyvault/v2 v2.8.0 h1:wwVp83pveI4fLh2KHiAD/xSmqPkwrYN2VY8DeWWYPL4=
-github.com/pulumi/pulumi-azure-native-sdk/keyvault/v2 v2.8.0/go.mod h1:GyiEY70atSOSUnipRvoBnkt6M/idXgpq+28b8Uug1Ok=
+github.com/pulumi/pulumi-azure-native-sdk/keyvault/v2 v2.10.0 h1:Ijfxx6pjeEXrerx39mIbkHUQ7knMC/i8YBku+CGGyCw=
+github.com/pulumi/pulumi-azure-native-sdk/keyvault/v2 v2.10.0/go.mod h1:avZ5phfid7ioHFpHXuHW6A5WG9HeEDQ2VgXkf3V53GE=
 github.com/pulumi/pulumi-azure-native-sdk/resources/v2 v2.10.0 h1:oxSJ0VX+n9htLCMfLkdLVBwvAoat1FKCSYW54xeQBtg=
 github.com/pulumi/pulumi-azure-native-sdk/resources/v2 v2.10.0/go.mod h1:92BCqKFsb96SvLPqWoEjU0o3r0BSOeN9KdwtCJ+TmMQ=
 github.com/pulumi/pulumi-azure-native-sdk/storage/v2 v2.8.0 h1:GBvUXMg/39zWN/1yx7jWBKsWpxdyq6hzbw68vkhaYJw=
