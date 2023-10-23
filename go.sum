@@ -144,8 +144,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/pulumi/esc v0.5.2 h1:Wnr0oXy8MAyRMtVrMHPI2frjyuylVnU47ReFPNjE3C0=
 github.com/pulumi/esc v0.5.2/go.mod h1:lp6lkE9JrifhmjlXVH9//Rj45OETlVPHZKvoNRyU54Q=
-github.com/pulumi/pulumi-azure-native-sdk/authorization/v2 v2.10.0 h1:e4PuOQ7v0/KgwXdHDCiQRNdtXFd+/aaTg1fI8BUbiPI=
-github.com/pulumi/pulumi-azure-native-sdk/authorization/v2 v2.10.0/go.mod h1:oGAM4I4zAdWMXJ5Cn7ALO4Wmc5Z/skXc05ZzwKmdGps=
+github.com/pulumi/pulumi-azure-native-sdk/authorization/v2 v2.12.0 h1:s7YrUp0uWqsWuUtO/g0KSLctG4GrVMCbutOZdvg1lpI=
+github.com/pulumi/pulumi-azure-native-sdk/authorization/v2 v2.12.0/go.mod h1:+Ol/KZPnXqKVMXv2O/Tzh0d6E/ZJgxT4+nkJLXq/0b8=
 github.com/pulumi/pulumi-azure-native-sdk/cdn/v2 v2.10.0 h1:5Ek4iZcYS26S6GWl69IIxADpkawgwU7hV0AUjwN0JZY=
 github.com/pulumi/pulumi-azure-native-sdk/cdn/v2 v2.10.0/go.mod h1:9Xp5hvrof96ZOKEjhGHNDwhbS2pLCQZdrnMUbN12ZM8=
 github.com/pulumi/pulumi-azure-native-sdk/keyvault/v2 v2.12.0 h1:h4hyeaDMzB24MXKa9RG6RMOu9wwiq7035+vIOpvfDdU=
