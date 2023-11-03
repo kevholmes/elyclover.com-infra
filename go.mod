@@ -5,7 +5,7 @@ go 1.21
 require (
 	github.com/pulumi/pulumi-azure-native-sdk/authorization/v2 v2.10.0
 	github.com/pulumi/pulumi-azure-native-sdk/cdn/v2 v2.10.0
-	github.com/pulumi/pulumi-azure-native-sdk/keyvault/v2 v2.12.0
+	github.com/pulumi/pulumi-azure-native-sdk/keyvault/v2 v2.14.1
 	github.com/pulumi/pulumi-azure-native-sdk/resources/v2 v2.12.0
 	github.com/pulumi/pulumi-azure-native-sdk/storage/v2 v2.12.0
 	github.com/pulumi/pulumi-azure/sdk/v5 v5.52.0
@@ -48,7 +48,7 @@ require (
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/kevinburke/ssh_config v1.2.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
-	github.com/mattn/go-isatty v0.0.19 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-localereader v0.0.1 // indirect
 	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/mitchellh/go-ps v1.0.0 // indirect
@@ -63,7 +63,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pkg/term v1.1.0 // indirect
 	github.com/pulumi/esc v0.5.6 // indirect
-	github.com/pulumi/pulumi-azure-native-sdk/v2 v2.12.0 // indirect
+	github.com/pulumi/pulumi-azure-native-sdk/v2 v2.14.1 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06 // indirect
