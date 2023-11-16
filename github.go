@@ -65,7 +65,7 @@ func exportDeployEnvDataToGitHubRepo(ctx *pulumi.Context, cfg *config.Config, sp
 		"AZ_CDN_PROFILE_NAME": cdnprof.Name,
 		"AZ_RESOURCE_GROUP":   rg.Name,
 		"AZ_STORAGE_ACCT":     sa.Name,
-		"CLIENT_ID":           sp.ServicePrincipal.ApplicationId,
+		"CLIENT_ID":           sp.ServicePrincipal.ClientId,
 		"SUBSCRIPTION_ID":     pulumi.String(cfg.Require("AzSubScriptionIdWeb")),
 		"TENANT_ID":           pulumi.String(cfg.Require("AzTenantId")),
 	}
