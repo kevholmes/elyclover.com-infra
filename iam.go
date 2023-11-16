@@ -35,9 +35,9 @@ func generateCICDServicePrincipal(ctx *pulumi.Context, sa *storage.StorageAccoun
 
 	spDesc := pulumi.Sprintf("Service Principal used for CI/CD purposes within %s-%s", ctx.Project(), ctx.Stack())
 	nspArgs := azuread.ServicePrincipalArgs{
-		ApplicationId: app.ApplicationId,
-		UseExisting:   pulumi.Bool(false),
-		Description:   spDesc,
+		ClientId:    app.ClientId,
+		UseExisting: pulumi.Bool(false),
+		Description: spDesc,
 	}
 	nsp.ServicePrincipal, err = azuread.NewServicePrincipal(ctx, cicd+"-serviceprincipal", &nspArgs)
 	if err != nil {
