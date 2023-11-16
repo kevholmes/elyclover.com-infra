@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/kevholmes/elyclover.com-infra/compare/v1.3.0...v1.3.1) (2023-11-16)
+
+
+### Bug Fixes
+
+* ci lint azuread lib deprecation, v3 requires switch to clientid var ([#72](https://github.com/kevholmes/elyclover.com-infra/issues/72)) ([b82b588](https://github.com/kevholmes/elyclover.com-infra/commit/b82b588eded518039666595a744a33db1d3dad55))
+* dependabot pr grouping for minor/patch version bumps of go libs ([#63](https://github.com/kevholmes/elyclover.com-infra/issues/63)) ([8733436](https://github.com/kevholmes/elyclover.com-infra/commit/8733436ab3ea98d8b72825079d7651c265f55f96))
+
 ## [1.3.0](https://github.com/kevholmes/elyclover.com-infra/compare/v1.2.1...v1.3.0) (2023-10-07)
 
 
