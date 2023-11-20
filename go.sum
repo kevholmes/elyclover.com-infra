@@ -161,8 +161,8 @@ github.com/pulumi/pulumi-azure-native-sdk/v2 v2.16.0 h1:zH/1gJZa2uADjbPwUdIwodi5
 github.com/pulumi/pulumi-azure-native-sdk/v2 v2.16.0/go.mod h1:Th+Mpm432EDV/jU8jnUF9QoNdiON2aXw6c2t4d2pbDA=
 github.com/pulumi/pulumi-azure/sdk/v5 v5.55.0 h1:m6SsdLE1h45zloMG+o1pUFrqWs6DwoFq2OwbdL53ThU=
 github.com/pulumi/pulumi-azure/sdk/v5 v5.55.0/go.mod h1:NBlcmmrp69qq7ix6O61HmvhmX68Q1LRfaQsrMfGO3mw=
-github.com/pulumi/pulumi-azuread/sdk/v5 v5.44.0 h1:xq0M2NCYUcryq4tUkzKLTnL2iVhlea0iW9D3e2OlmkY=
-github.com/pulumi/pulumi-azuread/sdk/v5 v5.44.0/go.mod h1:IDbit2mwLLv6lBojMKcVSpWtTV6PsYuZXRm8iRwvdi8=
+github.com/pulumi/pulumi-azuread/sdk/v5 v5.45.0 h1:M2DNEZ1ptX/mhdA0ueEZyi1PDyNg20nlAKFJu6fdnA4=
+github.com/pulumi/pulumi-azuread/sdk/v5 v5.45.0/go.mod h1:7jGQWvq98mDKxJzvlgcV9htNIkx+HfFJPzWIfI/VVUA=
 github.com/pulumi/pulumi-github/sdk/v5 v5.22.0 h1:KcDBhmo/ZqHNSBWBg1rIDhI/bGx4ruk+b4t9fJ121hA=
 github.com/pulumi/pulumi-github/sdk/v5 v5.22.0/go.mod h1:8RxPzS5SuvzV3FyrUJL/HdzEdy6tA5yNWATzXT4/aps=
 github.com/pulumi/pulumi/sdk/v3 v3.93.0 h1:5InTUxulGuPMXQbnrruIbOEJylRkRWfoDyQIj6dtsYA=

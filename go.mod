@@ -9,7 +9,7 @@ require (
 	github.com/pulumi/pulumi-azure-native-sdk/resources/v2 v2.16.0
 	github.com/pulumi/pulumi-azure-native-sdk/storage/v2 v2.16.0
 	github.com/pulumi/pulumi-azure/sdk/v5 v5.55.0
-	github.com/pulumi/pulumi-azuread/sdk/v5 v5.44.0
+	github.com/pulumi/pulumi-azuread/sdk/v5 v5.45.0
 	github.com/pulumi/pulumi-github/sdk/v5 v5.22.0
 	github.com/pulumi/pulumi/sdk/v3 v3.93.0
 	software.sslmate.com/src/go-pkcs12 v0.4.0
