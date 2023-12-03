@@ -26,10 +26,7 @@ func (pr *projectResources) createDnsRecordByEnv1() (err error) {
 	switch pr.cfgKeys.envKey {
 	case PROD: // apex domain for prod eg tld.com uses A record referencing Azure resource
 		// create A record pointing at CDN Endpoint resource ID
-		//dnsRecord, err := createARecordPointingAtCdnResourceID(pr.pulumiCtx,
-		//	pr.cfgKeys.dnsResourceGrp, pr.webDnsZone, pulumi.StringOutput(pr.webCdnEp.ID()),
-		//	pr.cfgKeys.envKey, pr.cfgKeys.siteKey)
-		dnsRecord, err := pr.createARecordPointingAtCdnResourceID1()
+		pr.dnsRecords.a, err = pr.createARecordPointingAtCdnResourceID1()
 		if err != nil {
 			return err
 		}
@@ -39,14 +36,12 @@ func (pr *projectResources) createDnsRecordByEnv1() (err error) {
 			r = cdnVerify + "." + h
 			return
 		}).(pulumi.StringOutput)
-		//_, err = createCNAMERecordPointingAtCdnEndpoint(pr.pulumiCtx,
-		//	pr.cfgKeys.dnsResourceGrp, pr.webDnsZone, cdnVerifyHostname, cdnVerify, pr.cfgKeys.siteKey)
-		_, err = pr.createCNAMERecordPointingAtCdnEndpoint1(cdnVerifyHostname)
+		pr.dnsRecords.cname, err = pr.createCNAMERecordPointingAtCdnEndpoint1(cdnVerifyHostname)
 		if err != nil {
 			return err
 		}
 		// strip out trailing '.' from A record returned FQDN string within Azure DNS API
-		pr.webFqdn = dnsRecord.Fqdn.ApplyT(func(fqdn string) (string, error) {
+		pr.webFqdn = pr.dnsRecords.a.Fqdn.ApplyT(func(fqdn string) (string, error) {
 			h, found := strings.CutSuffix(fqdn, ".")
 			if !found {
 				return h, fqdnErr
@@ -55,14 +50,12 @@ func (pr *projectResources) createDnsRecordByEnv1() (err error) {
 		}).(pulumi.StringOutput)
 	default: // everything that's not prod and has a sub-domain eg dev.tld.com
 		// create CNAME DNS record to point at CDN endpoint
-		//dnsRecord, err := createCNAMERecordPointingAtCdnEndpoint(pr.pulumiCtx,
-		//	pr.cfgKeys.dnsResourceGrp, pr.webDnsZone, pr.webCdnEp.Name, pr.cfgKeys.envKey, pr.cfgKeys.siteKey)
-		dnsRecord, err := pr.createCNAMERecordPointingAtCdnEndpoint1(pr.webCdnEp.HostName)
+		pr.dnsRecords.cname, err = pr.createCNAMERecordPointingAtCdnEndpoint1(pr.webCdnEp.HostName)
 		if err != nil {
 			return err
 		}
 		// strip out trailing '.' from CNAME's returned FQDN string within Azure DNS API
-		pr.webFqdn = dnsRecord.Fqdn.ApplyT(func(fqdn string) (string, error) {
+		pr.webFqdn = pr.dnsRecords.cname.Fqdn.ApplyT(func(fqdn string) (string, error) {
 			h, found := strings.CutSuffix(fqdn, ".")
 			if !found {
 				return h, fqdnErr

@@ -119,6 +119,10 @@ func (pr *projectResources) newEndpointCustomDomain1() (err error) {
 			HostName:      pr.webFqdn,
 		},
 	}
+
+	// use these to associate CDN EP with DNS Records they depend on
+	// the pulumi provider doesn't seem to pick these relationships up
+	recordsDepend := []pulumi.Resource{}
 	switch pr.cfgKeys.envKey {
 	// prod is byo certificate (self-managed)
 	// all subdomains are ACME and managed by Azure (mostly)
@@ -130,9 +134,11 @@ func (pr *projectResources) newEndpointCustomDomain1() (err error) {
 		}
 		epCfg.userManaged.KeyVaultSecretId = certSec.Properties.SecretUri()
 		epCfg.domainArgs.UserManagedHttps = epCfg.userManaged
+		recordsDepend = append(recordsDepend, pr.dnsRecords.a, pr.dnsRecords.cname)
 	// azure cdn-managed certificate (auto-gen/rotated)
 	default:
 		epCfg.domainArgs.CdnManagedHttps = epCfg.cdnManaged
+		recordsDepend = append(recordsDepend, pr.dnsRecords.cname)
 	}
 	// create new CDN endpoint custom domain depending on prod/nonprod settings configured above
 	// we ignore changes here to "cdnEndpointId" due to spurious "diffs" caused by a capital "G" in resourceGroup URIs
@@ -143,7 +149,7 @@ func (pr *projectResources) newEndpointCustomDomain1() (err error) {
 	// https://github.com/kevholmes/elyclover.com-infra/issues/76
 	_, err = legacycdn.NewEndpointCustomDomain(
 		pr.pulumiCtx, pr.cfgKeys.siteKey+pr.cfgKeys.envKey, &epCfg.domainArgs,
-		pulumi.IgnoreChanges([]string{"cdnEndpointId"}), pulumi.DependsOn([]pulumi.Resource{}))
+		pulumi.IgnoreChanges([]string{"cdnEndpointId"}), pulumi.DependsOn(recordsDepend))
 	if err != nil {
 		fmt.Println("ERROR: creating custom domain for CDN endpoint failed")
 		return err

@@ -30,6 +30,12 @@ type cfgKeys struct {
 type svcPrincipals struct {
 	cicd ServicePrincipalEnvelope
 }
+
+type dnsRecords struct {
+	a     *dns.ARecord
+	cname *dns.CNameRecord
+}
+
 type projectResources struct {
 	pulumiCtx *pulumi.Context
 	cfg       *config.Config
@@ -37,6 +43,7 @@ type projectResources struct {
 	// Azure service values for top-level Subscription
 	thisAzureSubscription *core.LookupSubscriptionResult
 	svcPrincipals         svcPrincipals
+	dnsRecords            dnsRecords
 	webResourceGrp        *resources.ResourceGroup
 	webStorageAccount     *storage.StorageAccount
 	webStaticEp           pulumi.StringOutput
