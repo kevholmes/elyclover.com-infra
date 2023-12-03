@@ -21,7 +21,7 @@ const StorageContributor string = "/providers/Microsoft.Authorization/roleDefini
 const CdnContributor string = "/providers/Microsoft.Authorization/roleDefinitions/426e0c7f-0c7e-4658-b36f-ff54d6c29b45"
 
 // create an Azure Service Principal to be used by CI/CD for deploying built code, expiring CDN content
-func (pr *projectResources) generateCICDServicePrincipal1() (err error) {
+func (pr *projectResources) generateCICDServicePrincipal() (err error) {
 	cicd := "cicd-actions" + "-" + pr.cfgKeys.projectKey + "-" + pr.cfgKeys.envKey
 
 	app, err := azuread.NewApplication(pr.pulumiCtx, cicd, &azuread.ApplicationArgs{

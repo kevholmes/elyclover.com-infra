@@ -17,7 +17,7 @@ type epCfgs struct {
 	domainArgs  legacycdn.EndpointCustomDomainArgs
 }
 
-func (pr *projectResources) createCdnProfile1() (err error) {
+func (pr *projectResources) createCdnProfile() (err error) {
 	var cdnProfileArgs = nativecdn.ProfileArgs{
 		Location:          pulumi.String("global"),
 		ResourceGroupName: pr.webResourceGrp.Name,
@@ -34,7 +34,7 @@ func (pr *projectResources) createCdnProfile1() (err error) {
 	return
 }
 
-func (pr *projectResources) createCdnEndpoint1() (err error) {
+func (pr *projectResources) createCdnEndpoint() (err error) {
 	// Create CDN Endpoint using newly created CDN Profile
 	originsArgs := nativecdn.DeepCreatedOriginArray{
 		nativecdn.DeepCreatedOriginArgs{
@@ -102,7 +102,7 @@ func (pr *projectResources) createCdnEndpoint1() (err error) {
 	return
 }
 
-func (pr *projectResources) newEndpointCustomDomain1() (err error) {
+func (pr *projectResources) newEndpointCustomDomain() (err error) {
 	// Utilize the azure legacy provider since it supports setting up auto-TLS for CDN custom domains
 	// azure-native provider strangely lacks support for CDN-managed TLS on custom domains...
 	epCfg := epCfgs{
@@ -162,7 +162,7 @@ func (pr *projectResources) newEndpointCustomDomain1() (err error) {
 // Production uses an apex domain (eg tld.com) which Azure doesn't support free TLS certs + rotation on (:shrug:)
 // so we'll need to set up a Service Principal registered under the Azure CDN App profile and give it RBAC access to
 // an external Azure KeyVault resource that contains our pfx certificate needed for the prod tld.com domain.
-func (pr *projectResources) setupTlsTermination1() (err error) {
+func (pr *projectResources) setupTlsTermination() (err error) {
 	if pr.cfgKeys.envKey == PROD {
 		// Register Azure CDN Application as Service Principal in AD/Entra tenant so it can fetch TLS pfx data in external Keystore
 		nsp, err := azuread.NewServicePrincipal(pr.pulumiCtx, pr.cfgKeys.cdnAzureId, &azuread.ServicePrincipalArgs{
@@ -192,7 +192,7 @@ func (pr *projectResources) setupTlsTermination1() (err error) {
 	}
 
 	// Add Custom Domain to CDN for prod or non-prod
-	err = pr.newEndpointCustomDomain1()
+	err = pr.newEndpointCustomDomain()
 	if err != nil {
 		return err
 	}

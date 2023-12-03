@@ -6,7 +6,7 @@ import (
 	"github.com/pulumi/pulumi-azure-native-sdk/resources/v2"
 )
 
-func (pr *projectResources) createResourceGroup1() (err error) {
+func (pr *projectResources) createResourceGroup() (err error) {
 	// Create an Azure Resource Group
 	name := pr.cfgKeys.projectKey + "-" + pr.cfgKeys.envKey
 	pr.webResourceGrp, err = resources.NewResourceGroup(pr.pulumiCtx, name, nil)

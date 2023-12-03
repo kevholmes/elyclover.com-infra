@@ -71,19 +71,19 @@ func main() {
 		}
 
 		// Create an Azure Resource Group
-		err = pr.createResourceGroup1()
+		err = pr.createResourceGroup()
 		if err != nil {
 			return err
 		}
 
 		// Create an Azure Storage Account to host our site
-		err = pr.newStorageAccount1()
+		err = pr.newStorageAccount()
 		if err != nil {
 			return err
 		}
 
 		// Enable static web hosting on storage account
-		err = pr.enableStaticWebHostOnStorageAccount1()
+		err = pr.enableStaticWebHostOnStorageAccount()
 		if err != nil {
 			return err
 		}
@@ -93,44 +93,44 @@ func main() {
 		pr.webStaticEp = stripWebStorageEndPointUrl(pr.webStorageAccount)
 
 		// Create CDN Profile for usage by our endpoint(s)
-		err = pr.createCdnProfile1()
+		err = pr.createCdnProfile()
 		if err != nil {
 			return err
 		}
 
 		// Create CDN Endpoint using newly created CDN Profile
-		err = pr.createCdnEndpoint1()
+		err = pr.createCdnEndpoint()
 		if err != nil {
 			return err
 		}
 
 		// Look up DNS zone based on pulumi stack config var for external resource group that houses DNS records
-		err = pr.lookupDnsZone1()
+		err = pr.lookupDnsZone()
 		if err != nil {
 			return err
 		}
 
 		// Set up domains depending on env
-		err = pr.createDnsRecordByEnv1()
+		err = pr.createDnsRecordByEnv()
 		if err != nil {
 			return err
 		}
 
 		// Set up TLS depending on environment and custom domain types
-		err = pr.setupTlsTermination1()
+		err = pr.setupTlsTermination()
 		if err != nil {
 			return err
 		}
 
 		// Create+authorize Service Principal to be used in CI/CD process (uploading new content, invalidating cdn cache)
-		err = pr.generateCICDServicePrincipal1()
+		err = pr.generateCICDServicePrincipal()
 		if err != nil {
 			return err
 		}
 
 		// Export service principal secret/id, cdn profile/endpoint, resource group, storage acct
 		// to GitHub repo Deployment secrets/vars where Actions build and deploy to each environment re: gitops flow
-		err = pr.exportDeployEnvDataToGitHubRepo1()
+		err = pr.exportDeployEnvDataToGitHubRepo()
 		if err != nil {
 			return err
 		}

@@ -8,7 +8,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi/config"
 )
 
-func (pr *projectResources) exportDeployEnvDataToGitHubRepo1() (err error) {
+func (pr *projectResources) exportDeployEnvDataToGitHubRepo() (err error) {
 	// Validate repo
 	githubConfig := config.New(pr.pulumiCtx, "github")
 	repoPath := fmt.Sprintf("%s/%s", githubConfig.Require("owner"), pr.cfgKeys.ghAppSrcRepo)

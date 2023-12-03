@@ -7,7 +7,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func (pr *projectResources) newStorageAccount1() (err error) {
+func (pr *projectResources) newStorageAccount() (err error) {
 	storageAccountArgs := storage.StorageAccountArgs{
 		ResourceGroupName: pr.webResourceGrp.Name,
 		Sku: &storage.SkuArgs{
@@ -24,7 +24,7 @@ func (pr *projectResources) newStorageAccount1() (err error) {
 	return
 }
 
-func (pr *projectResources) enableStaticWebHostOnStorageAccount1() (err error) {
+func (pr *projectResources) enableStaticWebHostOnStorageAccount() (err error) {
 	// Enable static website support for the Storage Account
 	storageArgs := storage.StorageAccountStaticWebsiteArgs{
 		AccountName:       pr.webStorageAccount.Name,

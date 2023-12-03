@@ -8,7 +8,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func (pr *projectResources) lookupDnsZone1() (err error) {
+func (pr *projectResources) lookupDnsZone() (err error) {
 	dnsLookupZoneArgs := dns.LookupZoneArgs{
 		Name:              pr.cfgKeys.dnsLookupZone,
 		ResourceGroupName: &pr.cfgKeys.dnsResourceGrp,
@@ -21,12 +21,12 @@ func (pr *projectResources) lookupDnsZone1() (err error) {
 	return
 }
 
-func (pr *projectResources) createDnsRecordByEnv1() (err error) {
+func (pr *projectResources) createDnsRecordByEnv() (err error) {
 	fqdnErr := fmt.Errorf("passed FQDN string didn't include trailing '.' did the Azure API change?")
 	switch pr.cfgKeys.envKey {
 	case PROD: // apex domain for prod eg tld.com uses A record referencing Azure resource
 		// create A record pointing at CDN Endpoint resource ID
-		pr.dnsRecords.a, err = pr.createARecordPointingAtCdnResourceID1()
+		pr.dnsRecords.a, err = pr.createARecordPointingAtCdnResourceID()
 		if err != nil {
 			return err
 		}
@@ -36,7 +36,7 @@ func (pr *projectResources) createDnsRecordByEnv1() (err error) {
 			r = cdnVerify + "." + h
 			return
 		}).(pulumi.StringOutput)
-		pr.dnsRecords.cname, err = pr.createCNAMERecordPointingAtCdnEndpoint1(cdnVerifyHostname)
+		pr.dnsRecords.cname, err = pr.createCNAMERecordPointingAtCdnEndpoint(cdnVerifyHostname)
 		if err != nil {
 			return err
 		}
@@ -50,7 +50,7 @@ func (pr *projectResources) createDnsRecordByEnv1() (err error) {
 		}).(pulumi.StringOutput)
 	default: // everything that's not prod and has a sub-domain eg dev.tld.com
 		// create CNAME DNS record to point at CDN endpoint
-		pr.dnsRecords.cname, err = pr.createCNAMERecordPointingAtCdnEndpoint1(pr.webCdnEp.HostName)
+		pr.dnsRecords.cname, err = pr.createCNAMERecordPointingAtCdnEndpoint(pr.webCdnEp.HostName)
 		if err != nil {
 			return err
 		}
@@ -66,7 +66,7 @@ func (pr *projectResources) createDnsRecordByEnv1() (err error) {
 	return
 }
 
-func (pr *projectResources) createCNAMERecordPointingAtCdnEndpoint1(ep pulumi.StringOutput) (record *dns.CNameRecord, err error) {
+func (pr *projectResources) createCNAMERecordPointingAtCdnEndpoint(ep pulumi.StringOutput) (record *dns.CNameRecord, err error) {
 	// create new CNAME record in zone for non-prod env that will be used by CDN endpoint
 	dnsRecordArgs := dns.CNameRecordArgs{
 		ZoneName:          pulumi.String(pr.webDnsZone.Name),
@@ -85,7 +85,7 @@ func (pr *projectResources) createCNAMERecordPointingAtCdnEndpoint1(ep pulumi.St
 	return
 }
 
-func (pr *projectResources) createARecordPointingAtCdnResourceID1() (record *dns.ARecord, err error) {
+func (pr *projectResources) createARecordPointingAtCdnResourceID() (record *dns.ARecord, err error) {
 	dnsRecordArgs := dns.ARecordArgs{
 		Name:              pulumi.String("@"),
 		ZoneName:          pulumi.String(pr.webDnsZone.Name),
