@@ -24,24 +24,6 @@ func (pr *projectResources) newStorageAccount1() (err error) {
 	return
 }
 
-/*
-func enableStaticWebHostOnStorageAccount(ctx *pulumi.Context, saName pulumi.StringOutput, rg pulumi.StringOutput, siteKey string) (err error) {
-	// Enable static website support for the Storage Account
-	storageArgs := storage.StorageAccountStaticWebsiteArgs{
-		AccountName:       saName,
-		ResourceGroupName: rg,
-		IndexDocument:     pulumi.String("index.html"),
-		Error404Document:  pulumi.String("404.hml"),
-	}
-	_, err = storage.NewStorageAccountStaticWebsite(ctx, siteKey, &storageArgs)
-	if err != nil {
-		fmt.Printf("ERROR: creating staticWebsite %s failed\n", siteKey)
-		return err
-	}
-	return
-}
-*/
-
 func (pr *projectResources) enableStaticWebHostOnStorageAccount1() (err error) {
 	// Enable static website support for the Storage Account
 	storageArgs := storage.StorageAccountStaticWebsiteArgs{
