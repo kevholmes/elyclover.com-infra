@@ -63,9 +63,8 @@ func (pr *projectResources) exportDeployEnvDataToGitHubRepo1() (err error) {
 		"AZ_RESOURCE_GROUP":   pr.webResourceGrp.Name,
 		"AZ_STORAGE_ACCT":     pr.webStorageAccount.Name,
 		"CLIENT_ID":           pr.svcPrincipals.cicd.ServicePrincipal.ClientId,
-		//"SUBSCRIPTION_ID":   pulumi.String(cfg.Require("AzSubScriptionIdWeb")),
-		"SUBSCRIPTION_ID": pulumi.String(pr.thisAzureSubscription.Id),
-		"TENANT_ID":       pulumi.String(pr.cfgKeys.thisAzureTenantId),
+		"SUBSCRIPTION_ID":     pulumi.String(pr.thisAzureSubscription.SubscriptionId),
+		"TENANT_ID":           pulumi.String(pr.cfgKeys.thisAzureTenantId),
 	}
 	for k, v := range actionsVars {
 		_, err = github.NewActionsEnvironmentVariable(pr.pulumiCtx, k, &github.ActionsEnvironmentVariableArgs{
