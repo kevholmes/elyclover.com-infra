@@ -57,7 +57,7 @@ func (pr *projectResources) createDnsRecordByEnv1() (err error) {
 		// create CNAME DNS record to point at CDN endpoint
 		//dnsRecord, err := createCNAMERecordPointingAtCdnEndpoint(pr.pulumiCtx,
 		//	pr.cfgKeys.dnsResourceGrp, pr.webDnsZone, pr.webCdnEp.Name, pr.cfgKeys.envKey, pr.cfgKeys.siteKey)
-		dnsRecord, err := pr.createCNAMERecordPointingAtCdnEndpoint1(pr.webCdnEp.Name)
+		dnsRecord, err := pr.createCNAMERecordPointingAtCdnEndpoint1(pr.webCdnEp.HostName)
 		if err != nil {
 			return err
 		}
