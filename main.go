@@ -19,6 +19,7 @@ type cfgKeys struct {
 	thisAzureTenantId   string
 	dnsResourceGrp      string
 	dnsLookupZone       string
+	dnsRecordTTL        string
 	cdnAzureId          string
 	kvAzureSubscription string // keyvault can live elsewhere
 	kvAzureResourceGrp  string

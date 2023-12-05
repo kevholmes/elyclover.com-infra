@@ -7,8 +7,6 @@ import (
 	"github.com/pulumi/pulumi-azure-native-sdk/storage/v2"
 	"github.com/pulumi/pulumi-azure/sdk/v5/go/azure/core"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
-
-	//"golang.org/x/crypto/pkcs12"
 	pkcs12 "software.sslmate.com/src/go-pkcs12"
 )
 
@@ -45,6 +43,7 @@ func (pr *projectResources) initConfigKeys() (err error) {
 	pr.cfgKeys.dnsLookupZone = pr.cfg.Require("dnsZoneName")
 	pr.cfgKeys.ghAppSrcRepo = pr.cfg.Require("ghAppSrcRepo")
 	pr.cfgKeys.thisAzureTenantId = pr.cfg.Require("AzTenantId")
+	pr.cfgKeys.dnsRecordTTL = pr.cfg.Require("dnsRecordTTL")
 	if pr.cfgKeys.envKey == PROD {
 		pr.cfgKeys.cdnAzureId = pr.cfg.Require("Microsoft.AzureFrontDoor-Cdn")
 		pr.cfgKeys.kvAzureSubscription = pr.cfg.Require("keyVaultAzureSubscription")

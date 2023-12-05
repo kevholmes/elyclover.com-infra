@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/pulumi/pulumi-azure/sdk/v5/go/azure/dns"
@@ -26,7 +27,7 @@ func (pr *projectResources) createDnsRecordByEnv() (err error) {
 	switch pr.cfgKeys.envKey {
 	case PROD: // apex domain for prod eg tld.com uses A record referencing Azure resource
 		// create A record pointing at CDN Endpoint resource ID
-		pr.dnsRecords.a, err = pr.createARecordPointingAtCdnResourceID()
+		err = pr.createApexRecordPointingAtCdnResourceID()
 		if err != nil {
 			return err
 		}
@@ -36,7 +37,7 @@ func (pr *projectResources) createDnsRecordByEnv() (err error) {
 			r = cdnVerify + "." + h
 			return
 		}).(pulumi.StringOutput)
-		pr.dnsRecords.cname, err = pr.createCNAMERecordPointingAtCdnEndpoint(cdnVerifyHostname)
+		err = pr.createCNAMERecordPointingAtCdnEndpoint(cdnVerifyHostname)
 		if err != nil {
 			return err
 		}
@@ -50,7 +51,7 @@ func (pr *projectResources) createDnsRecordByEnv() (err error) {
 		}).(pulumi.StringOutput)
 	default: // everything that's not prod and has a sub-domain eg dev.tld.com
 		// create CNAME DNS record to point at CDN endpoint
-		pr.dnsRecords.cname, err = pr.createCNAMERecordPointingAtCdnEndpoint(pr.webCdnEp.HostName)
+		err = pr.createCNAMERecordPointingAtCdnEndpoint(pr.webCdnEp.HostName)
 		if err != nil {
 			return err
 		}
@@ -66,39 +67,50 @@ func (pr *projectResources) createDnsRecordByEnv() (err error) {
 	return
 }
 
-func (pr *projectResources) createCNAMERecordPointingAtCdnEndpoint(ep pulumi.StringOutput) (record *dns.CNameRecord, err error) {
+func (pr *projectResources) createCNAMERecordPointingAtCdnEndpoint(ep pulumi.StringOutput) (err error) {
+	ttl, err := strconv.Atoi(pr.cfgKeys.dnsRecordTTL)
+	if err != nil {
+		fmt.Printf("ERROR: dnsRecordTTL provided cannot be converted from string to int\n")
+		return err
+	}
 	// create new CNAME record in zone for non-prod env that will be used by CDN endpoint
 	dnsRecordArgs := dns.CNameRecordArgs{
 		ZoneName:          pulumi.String(pr.webDnsZone.Name),
 		ResourceGroupName: pulumi.String(pr.cfgKeys.dnsResourceGrp),
-		Ttl:               pulumi.Int(300), // 5 minutes
+		Ttl:               pulumi.Int(ttl),
 		Name:              pulumi.String(pr.cfgKeys.envKey),
 		Record:            ep,
 	}
 	name := pr.cfgKeys.siteKey + pr.cfgKeys.envKey
-	record, err = dns.NewCNameRecord(pr.pulumiCtx, name, &dnsRecordArgs)
+	pr.dnsRecords.cname, err = dns.NewCNameRecord(pr.pulumiCtx, name, &dnsRecordArgs)
 	if err != nil {
 		fmt.Printf("ERROR: creating CNAME record in RG %s failed\n",
 			pr.cfgKeys.dnsResourceGrp)
-		return record, err
+		return err
 	}
 	return
 }
 
-func (pr *projectResources) createARecordPointingAtCdnResourceID() (record *dns.ARecord, err error) {
+func (pr *projectResources) createApexRecordPointingAtCdnResourceID() (err error) {
+	ttl, err := strconv.Atoi(pr.cfgKeys.dnsRecordTTL)
+	if err != nil {
+		fmt.Printf("ERROR: dnsRecordTTL provided cannot be converted from string to int\n")
+		return err
+	}
+	rootRecordName := "@"
 	dnsRecordArgs := dns.ARecordArgs{
-		Name:              pulumi.String("@"),
+		Name:              pulumi.String(rootRecordName),
 		ZoneName:          pulumi.String(pr.webDnsZone.Name),
 		ResourceGroupName: pulumi.String(pr.cfgKeys.dnsResourceGrp),
-		Ttl:               pulumi.Int(300), // 5 minutes
+		Ttl:               pulumi.Int(ttl),
 		TargetResourceId:  pulumi.StringOutput(pr.webCdnEp.ID()),
 	}
 	name := pr.cfgKeys.siteKey + pr.cfgKeys.envKey
-	record, err = dns.NewARecord(pr.pulumiCtx, name, &dnsRecordArgs)
+	pr.dnsRecords.a, err = dns.NewARecord(pr.pulumiCtx, name, &dnsRecordArgs)
 	if err != nil {
 		fmt.Printf("ERROR: creating A record in RG %s failed\n",
 			pr.cfgKeys.dnsResourceGrp)
-		return record, err
+		return err
 	}
 	return
 }
