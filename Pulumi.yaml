@@ -8,10 +8,11 @@ config:
   github:owner: kevholmes
   # web project configs
   elyclover.com-infra:ghAppSrcRepo: "elyclover.com"
-  elyclover.com-infra:AzSubScriptionIdWeb: df058eb7-0193-43d2-b1ff-937439336e86
+  #elyclover.com-infra:AzSubScriptionIdWeb: df058eb7-0193-43d2-b1ff-937439336e86
   elyclover.com-infra:AzTenantId: 6088cb1f-43c7-4299-9378-4946a45e93d1
   elyclover.com-infra:siteKey: elyclover
   elyclover.com-infra:siteName: elyclover.com
   # dns configs from external Resource Group
   elyclover.com-infra:dnsResourceGroup: root
   elyclover.com-infra:dnsZoneName: elyclover.com
+  elyclover.com-infra:dnsRecordTTL: 300
