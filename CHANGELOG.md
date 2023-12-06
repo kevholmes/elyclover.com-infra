@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/kevholmes/elyclover.com-infra/compare/v1.3.1...v2.0.0) (2023-12-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* common structs, readability ([#79](https://github.com/kevholmes/elyclover.com-infra/issues/79))
+
+### Bug Fixes
+
+* common structs, readability ([#79](https://github.com/kevholmes/elyclover.com-infra/issues/79)) ([05b7b50](https://github.com/kevholmes/elyclover.com-infra/commit/05b7b50aa980ae8595b184e81f5dae9d83db5dd9))
+
 ## [1.3.1](https://github.com/kevholmes/elyclover.com-infra/compare/v1.3.0...v1.3.1) (2023-11-16)
 
 
