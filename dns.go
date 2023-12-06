@@ -37,7 +37,7 @@ func (pr *projectResources) createDnsRecordByEnv() (err error) {
 			r = cdnVerify + "." + h
 			return
 		}).(pulumi.StringOutput)
-		err = pr.createCNAMERecordPointingAtCdnEndpoint(cdnVerifyHostname)
+		err = pr.createCNAMERecordPointingAtCdnEndpoint(cdnVerifyHostname, pr.cfgKeys.siteKey+cdnVerify)
 		if err != nil {
 			return err
 		}
@@ -51,7 +51,7 @@ func (pr *projectResources) createDnsRecordByEnv() (err error) {
 		}).(pulumi.StringOutput)
 	default: // everything that's not prod and has a sub-domain eg dev.tld.com
 		// create CNAME DNS record to point at CDN endpoint
-		err = pr.createCNAMERecordPointingAtCdnEndpoint(pr.webCdnEp.HostName)
+		err = pr.createCNAMERecordPointingAtCdnEndpoint(pr.webCdnEp.HostName, pr.cfgKeys.envKey)
 		if err != nil {
 			return err
 		}
@@ -67,7 +67,7 @@ func (pr *projectResources) createDnsRecordByEnv() (err error) {
 	return
 }
 
-func (pr *projectResources) createCNAMERecordPointingAtCdnEndpoint(ep pulumi.StringOutput) (err error) {
+func (pr *projectResources) createCNAMERecordPointingAtCdnEndpoint(ep pulumi.StringOutput, name string) (err error) {
 	ttl, err := strconv.Atoi(pr.cfgKeys.dnsRecordTTL)
 	if err != nil {
 		fmt.Printf("ERROR: dnsRecordTTL provided cannot be converted from string to int\n")
@@ -78,10 +78,10 @@ func (pr *projectResources) createCNAMERecordPointingAtCdnEndpoint(ep pulumi.Str
 		ZoneName:          pulumi.String(pr.webDnsZone.Name),
 		ResourceGroupName: pulumi.String(pr.cfgKeys.dnsResourceGrp),
 		Ttl:               pulumi.Int(ttl),
-		Name:              pulumi.String(pr.cfgKeys.envKey),
+		Name:              pulumi.String(name),
 		Record:            ep,
 	}
-	name := pr.cfgKeys.siteKey + pr.cfgKeys.envKey
+
 	pr.dnsRecords.cname, err = dns.NewCNameRecord(pr.pulumiCtx, name, &dnsRecordArgs)
 	if err != nil {
 		fmt.Printf("ERROR: creating CNAME record in RG %s failed\n",
