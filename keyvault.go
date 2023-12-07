@@ -25,6 +25,8 @@ func getSecretByName(ctx *pulumi.Context, kv string, rg string, name string) (se
 	return
 }
 
+// utility functions
+
 // https://learn.microsoft.com/en-us/rest/api/keyvault/certificates/import-certificate/import-certificate?tabs=HTTP
 // Why PFX and not PEM: https://learn.microsoft.com/en-us/answers/questions/131459/azure-cdn-key-vault
 func importPfxToKeyVault(ctx *pulumi.Context, cfg *config.Config) (sec *keyvault.Secret, err error) {

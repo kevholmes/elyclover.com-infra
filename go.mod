@@ -3,15 +3,15 @@ module elyclover.com-infra
 go 1.21
 
 require (
-	github.com/pulumi/pulumi-azure-native-sdk/authorization/v2 v2.19.0
-	github.com/pulumi/pulumi-azure-native-sdk/cdn/v2 v2.19.0
-	github.com/pulumi/pulumi-azure-native-sdk/keyvault/v2 v2.19.0
-	github.com/pulumi/pulumi-azure-native-sdk/resources/v2 v2.19.0
-	github.com/pulumi/pulumi-azure-native-sdk/storage/v2 v2.19.0
-	github.com/pulumi/pulumi-azure/sdk/v5 v5.56.0
-	github.com/pulumi/pulumi-azuread/sdk/v5 v5.45.0
+	github.com/pulumi/pulumi-azure-native-sdk/authorization/v2 v2.20.1
+	github.com/pulumi/pulumi-azure-native-sdk/cdn/v2 v2.20.1
+	github.com/pulumi/pulumi-azure-native-sdk/keyvault/v2 v2.20.1
+	github.com/pulumi/pulumi-azure-native-sdk/resources/v2 v2.20.1
+	github.com/pulumi/pulumi-azure-native-sdk/storage/v2 v2.20.1
+	github.com/pulumi/pulumi-azure/sdk/v5 v5.58.0
+	github.com/pulumi/pulumi-azuread/sdk/v5 v5.46.0
 	github.com/pulumi/pulumi-github/sdk/v5 v5.22.0
-	github.com/pulumi/pulumi/sdk/v3 v3.94.2
+	github.com/pulumi/pulumi/sdk/v3 v3.95.0
 	software.sslmate.com/src/go-pkcs12 v0.4.0
 )
 
@@ -61,11 +61,13 @@ require (
 	github.com/muesli/termenv v0.15.1 // indirect
 	github.com/opentracing/basictracer-go v1.1.0 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
+	github.com/pgavlin/fx v0.1.6 // indirect
 	github.com/pjbgf/sha1cd v0.3.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pkg/term v1.1.0 // indirect
+	github.com/pulumi/appdash v0.0.0-20231130102013-538fec2a741d // indirect
 	github.com/pulumi/esc v0.5.6 // indirect
-	github.com/pulumi/pulumi-azure-native-sdk/v2 v2.19.0 // indirect
+	github.com/pulumi/pulumi-azure-native-sdk/v2 v2.20.1 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06 // indirect
@@ -97,5 +99,4 @@ require (
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	lukechampine.com/frand v1.4.2 // indirect
-	sourcegraph.com/sourcegraph/appdash v0.0.0-20211028080628-e2786a622600 // indirect
 )
