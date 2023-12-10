@@ -34,3 +34,18 @@ jobs:
           node-version: 18
       - run: npm install -g markdownlint-cli
       - run: make lint-markdown
+  pulumi-preview:
+    strategy:
+      matrix:
+        stack-name: [dev, stg, prod]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pulumi/actions@v4
+        with:
+          command: preview
+          stack-name: ${{ matrix.stack-name }}
+          #comment-on-pr: true # true for all PRs
+          #comment-on-summary: true
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
