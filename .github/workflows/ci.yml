@@ -35,6 +35,9 @@ jobs:
       - run: npm install -g markdownlint-cli
       - run: make lint-markdown
   pulumi-preview:
+    permissions:
+      id-token: write
+      contents: read
     strategy:
       matrix:
         stack-name: [dev, stg, prod]
