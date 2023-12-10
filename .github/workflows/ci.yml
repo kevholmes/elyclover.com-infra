@@ -51,7 +51,9 @@ jobs:
         with:
           go-version: 'stable'
       - run: go mod download
-      - name: Apache SOPS install/verify
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+      - name: Install Apache SOPS + Verify binary
         run: |
           curl -LO https://github.com/getsops/sops/releases/download/${{ env.SOPS_VER }}/sops-${{ env.SOPS_VER }}.linux.amd64
           curl -LO https://github.com/getsops/sops/releases/download/${{ env.SOPS_VER }}/sops-${{ env.SOPS_VER }}.checksums.txt
