@@ -3,6 +3,9 @@ name: ci
 on:
   pull_request:
 
+env:
+  SOPS_VER: v3.8.1
+
 jobs:
   make-lint-go:
     runs-on: ubuntu-latest
@@ -48,17 +51,30 @@ jobs:
         with:
           go-version: 'stable'
       - run: go mod download
+      - name: Apache SOPS install/verify
+        run: |
+          curl -LO https://github.com/getsops/sops/releases/download/${{ env.SOPS_VER }}/sops-${{ env.SOPS_VER }}.linux.amd64
+          curl -LO https://github.com/getsops/sops/releases/download/${{ env.SOPS_VER }}/sops-${{ env.SOPS_VER }}.checksums.txt
+          curl -LO https://github.com/getsops/sops/releases/download/${{ env.SOPS_VER }}/sops-${{ env.SOPS_VER }}.checksums.pem
+          curl -LO https://github.com/getsops/sops/releases/download/${{ env.SOPS_VER }}/sops-${{ env.SOPS_VER }}.checksums.sig
+          cosign verify-blob sops-${{ env.SOPS_VER }}.checksums.txt \
+            --certificate sops-${{ env.SOPS_VER }}.checksums.pem \
+            --signature sops-${{ env.SOPS_VER }}.checksums.sig \
+            --certificate-identity-regexp=https://github.com/getsops \
+            --certificate-oidc-issuer=https://token.actions.githubusercontent.com
+          sha256sum -c sops-${{ env.SOPS_VER }}.checksums.txt --ignore-missing
+          mv sops-${{ env.SOPS_VER }}.linux.amd64 /usr/local/bin/sops
+          chmod +x /usr/local/bin/sops
       - uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - run: make decrypt
       - uses: pulumi/actions@v4
         with:
           command: preview
           stack-name: ${{ matrix.stack-name }}
-          #comment-on-pr: true # true for all PRs
-          #comment-on-summary: true
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           ARM_USE_OIDC: true
