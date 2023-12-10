@@ -73,6 +73,8 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       - run: make decrypt
+        env:
+          AZURE_AUTH_METHOD: cli
       - uses: pulumi/actions@v4
         with:
           command: preview
