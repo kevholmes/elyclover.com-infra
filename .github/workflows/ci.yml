@@ -78,9 +78,10 @@ jobs:
           azcliversion: latest
           inlineScript: |
             az account show
+      - name: block requests to Azure metadata service @ 169.254.169.254 (debug azure kms access issue)
+        run: |
+          sudo iptables -A OUTPUT -s 169.254.169.254 -j DROP
       - run: make decrypt
-        env:
-          AZURE_AUTH_METHOD: cli
       - uses: pulumi/actions@v4
         with:
           command: preview
