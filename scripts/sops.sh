@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 # encrypt or decrypt all tls assets at rest in src control
 # see project root's .sops.yaml for SOPS defaults
