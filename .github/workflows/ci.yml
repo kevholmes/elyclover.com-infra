@@ -72,18 +72,21 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      - name: make decrypt
+      - name: az debug
         uses: azure/CLI@v1
         with:
           azcliversion: latest
           inlineScript: |
             printenv
             az account show
-            make decrypt
       #- name: block requests to Azure metadata service @ 169.254.169.254 (debug azure kms access issue)
       #  run: |
       #    sudo iptables -A OUTPUT -s 169.254.169.254 -j DROP
       #- run: make decrypt
+      - name: make decrypt
+        run: |
+          printenv
+          make decrypt
       - uses: pulumi/actions@v4
         with:
           command: preview
