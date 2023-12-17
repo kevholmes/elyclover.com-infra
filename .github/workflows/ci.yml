@@ -79,6 +79,7 @@ jobs:
           inlineScript: |
             printenv
             az account show
+            az keyvault key list --vault-name elyclover-kv
       #- name: block requests to Azure metadata service @ 169.254.169.254 (debug azure kms access issue)
       #  run: |
       #    sudo iptables -A OUTPUT -s 169.254.169.254 -j DROP
@@ -86,6 +87,7 @@ jobs:
       - name: make decrypt
         run: |
           printenv
+          az keyvault key list --vault-name elyclover-kv
           make decrypt
       - uses: pulumi/actions@v4
         with:
