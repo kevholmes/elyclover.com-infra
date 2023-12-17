@@ -77,6 +77,7 @@ jobs:
         with:
           azcliversion: latest
           inlineScript: |
+            printenv
             az account show
             make decrypt
       #- name: block requests to Azure metadata service @ 169.254.169.254 (debug azure kms access issue)
