@@ -72,7 +72,9 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      # only prod TLS termination requires git sourced pfx certificate (non-acme)
       - name: make decrypt
+        if: matrix.stack-name == 'prod'
         run: |
           make decrypt
       - uses: pulumi/actions@v4
