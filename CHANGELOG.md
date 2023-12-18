@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.0](https://github.com/kevholmes/elyclover.com-infra/compare/v2.0.0...v2.1.0) (2023-12-18)
+
+
+### Features
+
+* add pulumi preview ci test matrix for all stack/envs ([#83](https://github.com/kevholmes/elyclover.com-infra/issues/83)) ([5a863ab](https://github.com/kevholmes/elyclover.com-infra/commit/5a863ab12bcb3cf135228232496b6d668d7e7513))
+
+
+### Bug Fixes
+
+* only decrypt pfx for prod testflow ([#88](https://github.com/kevholmes/elyclover.com-infra/issues/88)) ([160053c](https://github.com/kevholmes/elyclover.com-infra/commit/160053c35b43cc77a6deb6c6beb6078c889ef0ea))
+
 ## [2.0.0](https://github.com/kevholmes/elyclover.com-infra/compare/v1.3.1...v2.0.0) (2023-12-06)
 
 
