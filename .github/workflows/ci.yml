@@ -3,12 +3,15 @@ name: ci
 on:
   pull_request:
 
+env:
+  SOPS_VER: v3.8.1
+
 jobs:
   make-lint-go:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-go@v4
+      - uses: actions/setup-go@v5
         with:
           go-version-file: './go.mod'
       - run: make lint-go
@@ -16,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-go@v4
+      - uses: actions/setup-go@v5
         with:
           go-version-file: './go.mod'
       - run: make build
@@ -34,3 +37,53 @@ jobs:
           node-version: 18
       - run: npm install -g markdownlint-cli
       - run: make lint-markdown
+  pulumi-preview:
+    permissions:
+      id-token: write
+      contents: read
+    strategy:
+      matrix:
+        stack-name: [dev, stg, prod]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+      - run: go mod download
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+      - name: Install Apache SOPS + Verify binary
+        run: |
+          curl -LO https://github.com/getsops/sops/releases/download/${{ env.SOPS_VER }}/sops-${{ env.SOPS_VER }}.linux.amd64
+          curl -LO https://github.com/getsops/sops/releases/download/${{ env.SOPS_VER }}/sops-${{ env.SOPS_VER }}.checksums.txt
+          curl -LO https://github.com/getsops/sops/releases/download/${{ env.SOPS_VER }}/sops-${{ env.SOPS_VER }}.checksums.pem
+          curl -LO https://github.com/getsops/sops/releases/download/${{ env.SOPS_VER }}/sops-${{ env.SOPS_VER }}.checksums.sig
+          cosign verify-blob sops-${{ env.SOPS_VER }}.checksums.txt \
+            --certificate sops-${{ env.SOPS_VER }}.checksums.pem \
+            --signature sops-${{ env.SOPS_VER }}.checksums.sig \
+            --certificate-identity-regexp=https://github.com/getsops \
+            --certificate-oidc-issuer=https://token.actions.githubusercontent.com
+          sha256sum -c sops-${{ env.SOPS_VER }}.checksums.txt --ignore-missing
+          mv sops-${{ env.SOPS_VER }}.linux.amd64 /usr/local/bin/sops
+          chmod +x /usr/local/bin/sops
+      - uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      # only prod TLS termination requires git sourced pfx certificate (non-acme)
+      - name: make decrypt
+        if: matrix.stack-name == 'prod'
+        run: |
+          make decrypt
+      - uses: pulumi/actions@v4
+        with:
+          command: preview
+          stack-name: ${{ matrix.stack-name }}
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          ARM_USE_OIDC: true
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
