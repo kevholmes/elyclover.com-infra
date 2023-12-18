@@ -11,7 +11,7 @@ require (
 	github.com/pulumi/pulumi-azure/sdk/v5 v5.58.0
 	github.com/pulumi/pulumi-azuread/sdk/v5 v5.46.0
 	github.com/pulumi/pulumi-github/sdk/v5 v5.22.0
-	github.com/pulumi/pulumi/sdk/v3 v3.96.2
+	github.com/pulumi/pulumi/sdk/v3 v3.97.0
 	software.sslmate.com/src/go-pkcs12 v0.4.0
 )
 
