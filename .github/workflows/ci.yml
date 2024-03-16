@@ -67,7 +67,7 @@ jobs:
           sha256sum -c sops-${{ env.SOPS_VER }}.checksums.txt --ignore-missing
           mv sops-${{ env.SOPS_VER }}.linux.amd64 /usr/local/bin/sops
           chmod +x /usr/local/bin/sops
-      - uses: azure/login@v1
+      - uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
