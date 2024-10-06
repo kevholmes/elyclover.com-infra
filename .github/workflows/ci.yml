@@ -77,7 +77,7 @@ jobs:
         if: matrix.stack-name == 'prod'
         run: |
           make decrypt
-      - uses: pulumi/actions@v5
+      - uses: pulumi/actions@v6
         with:
           command: preview
           stack-name: ${{ matrix.stack-name }}
