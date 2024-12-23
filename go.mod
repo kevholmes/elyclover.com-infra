@@ -3,15 +3,15 @@ module elyclover.com-infra
 go 1.21
 
 require (
-	github.com/pulumi/pulumi-azure-native-sdk/authorization/v2 v2.63.0
-	github.com/pulumi/pulumi-azure-native-sdk/cdn/v2 v2.63.0
-	github.com/pulumi/pulumi-azure-native-sdk/keyvault/v2 v2.63.0
-	github.com/pulumi/pulumi-azure-native-sdk/resources/v2 v2.63.0
-	github.com/pulumi/pulumi-azure-native-sdk/storage/v2 v2.63.0
+	github.com/pulumi/pulumi-azure-native-sdk/authorization/v2 v2.79.0
+	github.com/pulumi/pulumi-azure-native-sdk/cdn/v2 v2.79.0
+	github.com/pulumi/pulumi-azure-native-sdk/keyvault/v2 v2.79.0
+	github.com/pulumi/pulumi-azure-native-sdk/resources/v2 v2.79.0
+	github.com/pulumi/pulumi-azure-native-sdk/storage/v2 v2.79.0
 	github.com/pulumi/pulumi-azure/sdk/v5 v5.89.0
-	github.com/pulumi/pulumi-azuread/sdk/v5 v5.53.4
+	github.com/pulumi/pulumi-azuread/sdk/v5 v5.53.5
 	github.com/pulumi/pulumi-github/sdk/v5 v5.26.0
-	github.com/pulumi/pulumi/sdk/v3 v3.134.0
+	github.com/pulumi/pulumi/sdk/v3 v3.144.1
 	software.sslmate.com/src/go-pkcs12 v0.5.0
 )
 
@@ -67,7 +67,7 @@ require (
 	github.com/pkg/term v1.1.0 // indirect
 	github.com/pulumi/appdash v0.0.0-20231130102222-75f619a67231 // indirect
 	github.com/pulumi/esc v0.9.1 // indirect
-	github.com/pulumi/pulumi-azure-native-sdk/v2 v2.63.0 // indirect
+	github.com/pulumi/pulumi-azure-native-sdk/v2 v2.79.0 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06 // indirect
@@ -83,14 +83,14 @@ require (
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	github.com/zclconf/go-cty v1.13.2 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
-	golang.org/x/crypto v0.24.0 // indirect
+	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/exp v0.0.0-20240604190554-fc45aab8b7f8 // indirect
 	golang.org/x/mod v0.18.0 // indirect
-	golang.org/x/net v0.26.0 // indirect
-	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.21.0 // indirect
-	golang.org/x/term v0.21.0 // indirect
-	golang.org/x/text v0.16.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
+	golang.org/x/sync v0.10.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/term v0.27.0 // indirect
+	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/tools v0.22.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240227224415-6ceb2ff114de // indirect
 	google.golang.org/grpc v1.63.2 // indirect
