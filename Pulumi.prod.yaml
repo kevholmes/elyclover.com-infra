@@ -9,4 +9,4 @@ config:
   elyclover.com-infra:prodPfxCertPath: ./assets/tls/elyclover_com.pfx.dec
   # github provider configs
   github:token:
-    secure: AAABAG4xcVO0GQ23Cu83RwXDpFQoD5LNfuRLbYsu/ZQH6B2F+t04h0S0G0wJIU8F1fsQNOg0SSbCZ9cHQSPtTzaqzqVJMLezCWXqPL50H/y1ZCFGt+JbbLS33H8Tal4drryBqXUWocbe6EVhVR8k1eA+IgB8BmZ9CXNY3IQ=
+    secure: AAABAFVCnTAeFHHnJANYke8quNkIHgGmisnCgyXBtH4gMD+94TN6/Wq4p+VVTlwb/UzduJ6saMmxH8Qc7N7+UkY18DUjh0XxIG7TSec8OqEgfwIX7lwLLHlkZN0I1+WjLJh1G5Tm+bgUFKWS5h0YjGt7vyS6oXadc63Z8aU=
