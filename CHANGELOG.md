@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/kevholmes/elyclover.com-infra/compare/v2.1.0...v2.1.1) (2025-11-22)
+
+
+### Bug Fixes
+
+* gh pat expiry ([#169](https://github.com/kevholmes/elyclover.com-infra/issues/169)) ([64b1afc](https://github.com/kevholmes/elyclover.com-infra/commit/64b1afcc82eb62a71c55a33e9ea62ba8b0dc6723))
+
 ## [2.1.0](https://github.com/kevholmes/elyclover.com-infra/compare/v2.0.0...v2.1.0) (2023-12-18)
 
 
