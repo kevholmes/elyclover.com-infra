@@ -3,21 +3,20 @@ module elyclover.com-infra
 go 1.25
 
 require (
-	github.com/pulumi/pulumi-azure-native-sdk/authorization/v2 v2.90.0
-	github.com/pulumi/pulumi-azure-native-sdk/cdn/v2 v2.90.0
-	github.com/pulumi/pulumi-azure-native-sdk/keyvault/v2 v2.90.0
-	github.com/pulumi/pulumi-azure-native-sdk/resources/v2 v2.90.0
-	github.com/pulumi/pulumi-azure-native-sdk/storage/v2 v2.90.0
-	github.com/pulumi/pulumi-azure/sdk/v5 v5.89.0
-	github.com/pulumi/pulumi-azuread/sdk/v5 v5.53.5
+	github.com/pulumi/pulumi-azure-native-sdk/authorization/v2 v2.92.0
+	github.com/pulumi/pulumi-azure-native-sdk/cdn/v2 v2.92.0
+	github.com/pulumi/pulumi-azure-native-sdk/keyvault/v2 v2.92.0
+	github.com/pulumi/pulumi-azure-native-sdk/resources/v2 v2.92.0
+	github.com/pulumi/pulumi-azure-native-sdk/storage/v2 v2.92.0
+	github.com/pulumi/pulumi-azure/sdk/v5 v5.89.1
+	github.com/pulumi/pulumi-azuread/sdk/v5 v5.53.7
 	github.com/pulumi/pulumi-github/sdk/v5 v5.26.0
-	github.com/pulumi/pulumi/sdk/v3 v3.206.0
+	github.com/pulumi/pulumi/sdk/v3 v3.210.0
 	software.sslmate.com/src/go-pkcs12 v0.6.0
 )
 
 require (
 	dario.cat/mergo v1.0.0 // indirect
-	github.com/BurntSushi/toml v1.2.1 // indirect
 	github.com/Microsoft/go-winio v0.6.1 // indirect
 	github.com/ProtonMail/go-crypto v1.1.3 // indirect
 	github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da // indirect
@@ -68,7 +67,7 @@ require (
 	github.com/pkg/term v1.1.0 // indirect
 	github.com/pulumi/appdash v0.0.0-20231130102222-75f619a67231 // indirect
 	github.com/pulumi/esc v0.17.0 // indirect
-	github.com/pulumi/pulumi-azure-native-sdk/v2 v2.90.0 // indirect
+	github.com/pulumi/pulumi-azure-native-sdk/v2 v2.92.0 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/santhosh-tekuri/jsonschema/v5 v5.0.0 // indirect
