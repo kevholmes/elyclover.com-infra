@@ -1,0 +1,25 @@
+name: pat-expiry
+
+on:
+  schedule:
+    - cron: "0 14 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: fail if RELEASER_TOKEN expires within 30 days
+        run: |
+          expires="$(grep -E 'elyclover.com-infra:releaserTokenExpiresOn:' Pulumi.prod.yaml | sed -E 's/.*: *"?([0-9]{4}-[0-9]{2}-[0-9]{2})"?.*/\1/')"
+          days=$(( ( $(date -ud "$expires" +%s) - $(date -u +%s) ) / 86400 ))
+          echo "RELEASER_TOKEN expires on $expires ($days days)"
+          if [ "$days" -lt 30 ]; then
+            echo "::error::RELEASER_TOKEN expires in $days days. Rotate it (README runbook)."
+            exit 1
+          fi
