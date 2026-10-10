@@ -74,8 +74,8 @@ The program fails with a clear error if either secret is missing.
 
    ```bash
    pulumi stack init kevholmes/prod
-   pulumi config set --secret cloudflare:apiToken                 # paste the bootstrap token
-   pulumi config set --secret elyclover.com-infra:releaserToken   # paste the PAT
+   pulumi config set cloudflare:apiToken --secret                 # paste the bootstrap token
+   pulumi config set elyclover.com-infra:releaserToken --secret   # paste the PAT
    export GITHUB_TOKEN="$(gh auth token)"
    pulumi preview --diff
    ```
@@ -145,7 +145,7 @@ and `pulumi preview` warn, and GitHub emails before a PAT expires.
 
    ```bash
    export GITHUB_TOKEN="$(gh auth token)"
-   pulumi config set --secret elyclover.com-infra:releaserToken
+   pulumi config set elyclover.com-infra:releaserToken --secret
    pulumi config set elyclover.com-infra:releaserTokenExpiresOn YYYY-MM-DD
    pulumi up --yes
    ```
@@ -155,7 +155,7 @@ and `pulumi preview` warn, and GitHub emails before a PAT expires.
 ### Rotate the Cloudflare bootstrap token
 
 1. In the Cloudflare dashboard, create a new token with the Bootstrap step 1 permissions.
-2. Run `pulumi config set --secret cloudflare:apiToken`, then `pulumi up`.
+2. Run `pulumi config set cloudflare:apiToken --secret`, then `pulumi up`.
 3. Delete the old token.
 
 The CI deploy token (`CLOUDFLARE_API_TOKEN` on the site repo) is owned by Pulumi. `pulumi up --replace <AccountToken URN>`
