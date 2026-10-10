@@ -6,7 +6,7 @@ config:
   elyclover.com-infra:pagesPreviewSubdomains: # subdomain == pages branch alias
     - dev
     - stg
-  elyclover.com-infra:enableCustomDomains: false
+  elyclover.com-infra:enableCustomDomains: "true"
   elyclover.com-infra:siteRepo: elyclover.com
   elyclover.com-infra:infraRepo: elyclover.com-infra
   elyclover.com-infra:siteRequiredChecks: ["deploy", "GitGuardian Security Checks"]
@@ -14,12 +14,16 @@ config:
   elyclover.com-infra:releaserTokenExpiresOn: "2027-10-10"
   elyclover.com-infra:pagesWritePermissionGroupName: Pages Write # must exist in migration/cf-permission-groups.json
   elyclover.com-infra:emailRecords: # exact values from migration/inventory.md section (a)
-    - { type: MX, name: elyclover.com, content: mail.protonmail.ch, priority: 10 }
-    - { type: MX, name: elyclover.com, content: mailsec.protonmail.ch, priority: 20 }
-    - { type: TXT, name: elyclover.com, content: "v=spf1 include:_spf.protonmail.ch ~all" }
-    - { type: TXT, name: elyclover.com, content: "google-site-verification=pLjIByVHrsX-fzG4MCgU3ZdO5eLMgpSvMQoB0BRLsb8" }
-    - { type: TXT, name: elyclover.com, content: "protonmail-verification=01ec2c0d2b08e62086ae33b35995bd08fff55d83" }
-    - { type: CNAME, name: protonmail._domainkey.elyclover.com, content: "protonmail.domainkey.dk2yipriglz7kou6bhplorcqkanwftmnsc636z6notbze6ksxwbca.domains.proton.ch" }
-    - { type: CNAME, name: protonmail2._domainkey.elyclover.com, content: "protonmail2.domainkey.dk2yipriglz7kou6bhplorcqkanwftmnsc636z6notbze6ksxwbca.domains.proton.ch" }
-    - { type: CNAME, name: protonmail3._domainkey.elyclover.com, content: "protonmail3.domainkey.dk2yipriglz7kou6bhplorcqkanwftmnsc636z6notbze6ksxwbca.domains.proton.ch" }
-    - { type: TXT, name: _dmarc.elyclover.com, content: "v=DMARC1; p=quarantine" }
+    - {type: MX, name: elyclover.com, content: mail.protonmail.ch, priority: 10}
+    - {type: MX, name: elyclover.com, content: mailsec.protonmail.ch, priority: 20}
+    - {type: TXT, name: elyclover.com, content: "v=spf1 include:_spf.protonmail.ch ~all"}
+    - {type: TXT, name: elyclover.com, content: "google-site-verification=pLjIByVHrsX-fzG4MCgU3ZdO5eLMgpSvMQoB0BRLsb8"}
+    - {type: TXT, name: elyclover.com, content: "protonmail-verification=01ec2c0d2b08e62086ae33b35995bd08fff55d83"}
+    - {type: CNAME, name: protonmail._domainkey.elyclover.com, content: "protonmail.domainkey.dk2yipriglz7kou6bhplorcqkanwftmnsc636z6notbze6ksxwbca.domains.proton.ch"}
+    - {type: CNAME, name: protonmail2._domainkey.elyclover.com, content: "protonmail2.domainkey.dk2yipriglz7kou6bhplorcqkanwftmnsc636z6notbze6ksxwbca.domains.proton.ch"}
+    - {type: CNAME, name: protonmail3._domainkey.elyclover.com, content: "protonmail3.domainkey.dk2yipriglz7kou6bhplorcqkanwftmnsc636z6notbze6ksxwbca.domains.proton.ch"}
+    - {type: TXT, name: _dmarc.elyclover.com, content: "v=DMARC1; p=quarantine"}
+  cloudflare:apiToken:
+    secure: AAABAJrWWlczqhmOAmQI0FiU+i4pptCpObfeRA9WoMtOky6+jHy6CV111om4y9FHTFzajEqTYs2/zViPHbav27MpQWf1FYGrwGjkvHfcEEZyrHNRiQ==
+  elyclover.com-infra:releaserToken:
+    secure: AAABAFCLI1OEwc7VJcls7Mup8mmrvdSmu+mgxuHe/+Bus/6qUigi9mp8+Zt7+BwCl/SwhwvtP2qroKJ7zC70iUpqnEVfGqUbx/f6WSkYnt46FVXesbEbNUxIHjZB1lfHf/0gxPSBQ8OhGzF4BQtEO9QScTnm23RwcuJdujY=
