@@ -6,7 +6,7 @@ config:
   elyclover.com-infra:pagesPreviewSubdomains: # subdomain == pages branch alias
     - dev
     - stg
-  elyclover.com-infra:enableCustomDomains: "false"
+  elyclover.com-infra:enableCustomDomains: "true"
   elyclover.com-infra:siteRepo: elyclover.com
   elyclover.com-infra:infraRepo: elyclover.com-infra
   elyclover.com-infra:siteRequiredChecks: ["deploy", "GitGuardian Security Checks"]
