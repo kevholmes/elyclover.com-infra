@@ -47,7 +47,7 @@ The program fails with a clear error if either secret is missing.
 ## Prerequisites
 
 - Go (version in `go.mod`), the Pulumi CLI, the GitHub CLI (`gh`, logged in) and `jq`
-- For `make lint`: `staticcheck` and `markdownlint` (`markdownlint-cli`)
+- For `make lint`: `markdownlint` (`markdownlint-cli`). `staticcheck` runs as `go tool staticcheck`, pinned in `go.mod`, so there is nothing to install
 - A Pulumi Cloud account for state
 - A Cloudflare account (the account ID is the `cloudflareAccountId` config value)
 - A GitHub fine-grained PAT for `RELEASER_TOKEN`
@@ -120,7 +120,7 @@ check that the `pagesSubdomain` output equals `<pagesProjectName>.pages.dev`; Cl
 | `make test` | `go test ./... -race` with atomic coverage over `./internal/...` (testutil excluded), writes `coverage.out` |
 | `make coverage-check` | Runs `make test`, then fails if total coverage is below 80% |
 | `make lint` | Runs `lint-go` and `lint-markdown` |
-| `make lint-go` | `go vet ./...` and `staticcheck ./...` |
+| `make lint-go` | `go vet ./...` and `go tool staticcheck ./...` (staticcheck is a Go tool dependency pinned in `go.mod`) |
 | `make lint-markdown` | `markdownlint '**/*.md' --ignore CHANGELOG.md` |
 
 All tests run under Pulumi mocks with no network access.

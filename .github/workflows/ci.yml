@@ -15,8 +15,6 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
-      - name: install staticcheck
-        run: go install honnef.co/go/tools/cmd/staticcheck@v0.8.1
       - uses: actions/setup-node@v6
         with:
           node-version: "24"
