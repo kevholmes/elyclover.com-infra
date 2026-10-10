@@ -233,10 +233,11 @@ func ptr(v float64) *float64 { return &v }
 
 func TestLongTXTRecordIsSplitIntoQuotedChunks(t *testing.T) {
 	long := strings.Repeat("a", 300)
-	records := fmt.Sprintf(`[{"type":"TXT","name":"elyclover.com","content":%q}]`, long)
+	records := fmt.Sprintf(`[{"type":"MX","name":"elyclover.com","content":"mail.protonmail.ch","priority":10},`+
+		`{"type":"TXT","name":"elyclover.com","content":%q}]`, long)
 	m, _ := provision(t, func(c map[string]string) { c[key+"emailRecords"] = records })
 
-	r := mustResource(t, m, "dns-email-0-txt")
+	r := mustResource(t, m, "dns-email-1-txt")
 	want := `"` + long[:255] + `" "` + long[255:] + `"`
 	if got := str(t, r, "content"); got != want {
 		t.Errorf("content = %q, want two quoted chunks of 255 and 45 characters", got)

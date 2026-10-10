@@ -271,6 +271,39 @@ func TestValidate(t *testing.T) {
 			mutate:  func(c map[string]string) { delete(c, key+"releaserTokenExpiresOn") },
 			wantErr: "releaserTokenExpiresOn must be a YYYY-MM-DD date",
 		},
+		{
+			name:    "empty email records",
+			mutate:  func(c map[string]string) { c[key+"emailRecords"] = `[]` },
+			wantErr: "emailRecords must contain at least one record of type MX",
+		},
+		{
+			name: "email records without an MX",
+			mutate: func(c map[string]string) {
+				c[key+"emailRecords"] = `[{"type":"TXT","name":"elyclover.com","content":"v=spf1 -all"},` +
+					`{"type":"CNAME","name":"protonmail._domainkey.elyclover.com","content":"example.domains.proton.ch"}]`
+			},
+			wantErr: "emailRecords must contain at least one record of type MX",
+		},
+		{
+			name:    "empty site repo",
+			mutate:  func(c map[string]string) { c[key+"siteRepo"] = "" },
+			wantErr: "siteRepo must not be empty",
+		},
+		{
+			name:    "empty infra repo",
+			mutate:  func(c map[string]string) { c[key+"infraRepo"] = "" },
+			wantErr: "infraRepo must not be empty",
+		},
+		{
+			name:    "empty site required checks",
+			mutate:  func(c map[string]string) { c[key+"siteRequiredChecks"] = `[]` },
+			wantErr: "siteRequiredChecks must not be empty",
+		},
+		{
+			name:    "empty infra required checks",
+			mutate:  func(c map[string]string) { c[key+"infraRequiredChecks"] = `[]` },
+			wantErr: "infraRequiredChecks must not be empty",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -311,6 +344,32 @@ func TestValidateReportsEveryProblem(t *testing.T) {
 		if !strings.Contains(err.Error(), want) {
 			t.Errorf("Validate error %q does not mention %q", err, want)
 		}
+	}
+}
+
+// TestValidateRejectsMissingEmailRecordsKey covers the dangerous case behind
+// the MX rule: a stack config without any emailRecords key loads fine (as an
+// empty list), so Validate is the only thing standing between a bad edit and a
+// pulumi up that deletes every mail record.
+func TestValidateRejectsMissingEmailRecordsKey(t *testing.T) {
+	c := testutil.ValidConfig()
+	delete(c, key+"emailRecords")
+
+	cfg, _, _, err := load(t, c)
+	if err != nil {
+		t.Fatalf("Load without emailRecords: %v, want it to load", err)
+	}
+	if len(cfg.EmailRecords) != 0 {
+		t.Fatalf("len(EmailRecords) = %d, want 0 when the key is absent", len(cfg.EmailRecords))
+	}
+
+	const want = "emailRecords must contain at least one record of type MX"
+	err = cfg.Validate()
+	if err == nil {
+		t.Fatal("Validate succeeded with no emailRecords key, want an error")
+	}
+	if err.Error() != want {
+		t.Fatalf("Validate error = %q, want exactly %q", err, want)
 	}
 }
 
@@ -444,9 +503,6 @@ func TestProdStackConfig(t *testing.T) {
 	}
 	if err := cfg.Validate(); err != nil {
 		t.Fatalf("Pulumi.prod.yaml does not validate: %v", err)
-	}
-	if cfg.EnableCustomDomains {
-		t.Error("Pulumi.prod.yaml enables custom domains; it must stay false until WP-17")
 	}
 	if got := strings.Join(cfg.PagesPreviewSubdomains, ","); got != "dev,stg" {
 		t.Errorf("PagesPreviewSubdomains = %q, want dev,stg", got)

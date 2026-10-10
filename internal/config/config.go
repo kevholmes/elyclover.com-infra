@@ -144,10 +144,24 @@ func (c *Config) Validate() error {
 	if c.PagesProjectName == "" {
 		add("pagesProjectName must not be empty")
 	}
+	if c.SiteRepo == "" {
+		add("siteRepo must not be empty")
+	}
+	if c.InfraRepo == "" {
+		add("infraRepo must not be empty")
+	}
+	if len(c.SiteRequiredChecks) == 0 {
+		add("siteRequiredChecks must not be empty")
+	}
+	if len(c.InfraRequiredChecks) == 0 {
+		add("infraRequiredChecks must not be empty")
+	}
 
+	hasMX := false
 	for i, r := range c.EmailRecords {
 		switch r.Type {
 		case "MX":
+			hasMX = true
 			if r.Priority == nil {
 				add("emailRecords[%d] (MX %s): priority is required for MX records", i, r.Name)
 			}
@@ -158,6 +172,11 @@ func (c *Config) Validate() error {
 		if c.Domain != "" && r.Name != c.Domain && !strings.HasSuffix(r.Name, "."+c.Domain) {
 			add("emailRecords[%d]: name %q must be %q or end with %q", i, r.Name, c.Domain, "."+c.Domain)
 		}
+	}
+	// A missing emailRecords key loads as an empty list; applying that would
+	// delete every mail record, so at least one MX record is required.
+	if !hasMX {
+		add("emailRecords must contain at least one record of type MX")
 	}
 
 	if _, err := time.Parse(DateLayout, c.ReleaserTokenExpiresOn); err != nil {
