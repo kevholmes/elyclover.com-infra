@@ -36,3 +36,6 @@ terraform.rc
 # Ignore potentially decrypted SOPS secrets
 *.dec
 
+# Coverage output and editor settings
+coverage.out
+.vscode/

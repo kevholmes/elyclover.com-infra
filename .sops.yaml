@@ -1,2 +1,0 @@
-creation_rules:
-  - azure_keyvault:  https://elyclover-kv.vault.azure.net/keys/sops-key/06473759a48f4ed39ef5343909e2e436
