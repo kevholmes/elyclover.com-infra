@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/kevholmes/elyclover.com-infra/compare/v2.1.1...v3.0.0) (2026-10-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* replace azure hosting with cloudflare pages ([#184](https://github.com/kevholmes/elyclover.com-infra/issues/184))
+
+### Features
+
+* replace azure hosting with cloudflare pages ([#184](https://github.com/kevholmes/elyclover.com-infra/issues/184)) ([5dc4bbd](https://github.com/kevholmes/elyclover.com-infra/commit/5dc4bbd9e607be69dcbe76c67f0ecd46e2cd3ebb))
+
 ## [2.1.1](https://github.com/kevholmes/elyclover.com-infra/compare/v2.1.0...v2.1.1) (2025-11-22)
 
 
