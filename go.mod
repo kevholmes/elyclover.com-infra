@@ -3,9 +3,9 @@ module elyclover.com-infra
 go 1.27
 
 require (
-	github.com/pulumi/pulumi-cloudflare/sdk/v6 v6.20.0
+	github.com/pulumi/pulumi-cloudflare/sdk/v6 v6.22.0
 	github.com/pulumi/pulumi-github/sdk/v6 v6.15.0
-	github.com/pulumi/pulumi/sdk/v3 v3.262.0
+	github.com/pulumi/pulumi/sdk/v3 v3.263.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
